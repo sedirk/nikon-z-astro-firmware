@@ -1,0 +1,25 @@
+{
+  "schema": 1,
+  "model": "Nikon Z6 (first generation)",
+  "version": "C3.80",
+  "module": "eg1620_038000.bi",
+  "load_base": "0x10020000",
+  "source_size": 33502842,
+  "source_sha256": "1e6348d58750e67372d0a8e363932c57ee9c04d0eb8f62803bcd19812df0d25c",
+  "status": "LAB ONLY: add native static 257-entry neutral branch to the installed neighborhood candidate; not preflash-reviewed or hardware-tested",
+  "candidates": [
+    {
+      "id": "still-neighborhood-plus-vignette-neutral-lab",
+      "scope": "Retain the three installed neighborhood edits. In the dedicated static vignette builder 100c289e, keep the original caller-mode branches but export properties+62=0 and properties+63 nonzero. The original generator then selects 101a1240. Do not change the main mode, spatial 17-entry branch, source calibration storage or RAW output route.",
+      "intent": "A controlled future comparison against modified1 for the nonzero vignette coefficients in flats 4864/4865. Native 1024 curve entries are a parameter-level neutral value, not yet demonstrated ring removal in saved hardware NEFs.",
+      "edits": [
+        {"address":"0x100c2654","before":"00f065fa","after":"4ff00000","instruction_before":"bl #0x100c2b22","instruction_after":"mov.w r0, #0"},
+        {"address":"0x100c267c","before":"00f045fa","after":"4ff00200","instruction_before":"bl #0x100c2b0a","instruction_after":"mov.w r0, #2"},
+        {"address":"0x100c2690","before":"90f81a18","after":"4ff00201","instruction_before":"ldrb.w r1, [r0, #0x81a]","instruction_after":"mov.w r1, #2"},
+        {"address":"0x100c28b2","before":"84f86200","after":"84f86290","instruction_before":"strb.w r0, [r4, #0x62]","instruction_after":"strb.w sb, [r4, #0x62]"},
+        {"address":"0x100c28c8","before":"84f86390","after":"84f86300","instruction_before":"strb.w sb, [r4, #0x63]","instruction_after":"strb.w r0, [r4, #0x63]"},
+        {"address":"0x100c2964","before":"90f85f02","after":"4ff00100","instruction_before":"ldrb.w r0, [r0, #0x25f]","instruction_after":"mov.w r0, #1"}
+      ]
+    }
+  ]
+}

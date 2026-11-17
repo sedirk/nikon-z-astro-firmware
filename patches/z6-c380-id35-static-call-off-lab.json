@@ -1,0 +1,276 @@
+{
+  "status": "OFFLINE_NATIVE_LAB_PASSED_NOT_INSTALL_KIT",
+  "base_firmware": "firmware/decoded/eg1620_038000.bi",
+  "base_sha256": "1e6348d58750e67372d0a8e363932c57ee9c04d0eb8f62803bcd19812df0d25c",
+  "parent": "outputs/Z6-C380-front-bit11-reviewed-2026-11-09/01_TEST_MODIFIED4/EG162080.BIN",
+  "parent_sha256": "bdf30026dc9d18b09a5ca9332369d126729d63a36013e94b8b20cf6638a4ef1b",
+  "module": "analysis/raw-fixed-operators-2026-11-09/static-call-lab/modified4-id35-static-call-off-lab.bi",
+  "sha256": "76474a8977a3bf4b456fe68f9594110714a04c09b4ec575f019ba27fadd0d2d7",
+  "bytes": 33502842,
+  "inherited_edits": [
+    {
+      "address": "0x100c2654",
+      "before": "00f065fa",
+      "after": "4ff00000"
+    },
+    {
+      "address": "0x100c267c",
+      "before": "00f045fa",
+      "after": "4ff00200"
+    },
+    {
+      "address": "0x100c2690",
+      "before": "90f81a18",
+      "after": "4ff00201"
+    },
+    {
+      "address": "0x100c28b2",
+      "before": "84f86200",
+      "after": "84f86290"
+    },
+    {
+      "address": "0x100c28c8",
+      "before": "84f86390",
+      "after": "84f86300"
+    },
+    {
+      "address": "0x100c2964",
+      "before": "90f85f02",
+      "after": "4ff00100"
+    },
+    {
+      "address": "0x1019741a",
+      "before": "59b1",
+      "after": "0ee0"
+    },
+    {
+      "address": "0x10197868",
+      "before": "4e77",
+      "after": "4a77"
+    },
+    {
+      "address": "0x10197876",
+      "before": "4078",
+      "after": "0020"
+    },
+    {
+      "address": "0x100f64b4",
+      "before": "90f85902",
+      "after": "4ff00200"
+    }
+  ],
+  "new_edits": [
+    {
+      "address": "0x10179d54",
+      "before": "0020",
+      "after": "0420",
+      "reason": "Private tag at the one observed static kind0 call.",
+      "assembly": "movs r0, #4",
+      "instructions": [
+        {
+          "pc": "0x10179d54",
+          "bytes": "0420",
+          "mnemonic": "movs",
+          "operands": "r0, #4"
+        }
+      ]
+    },
+    {
+      "address": "0x1011c756",
+      "before": "05460e464ff6ff77",
+      "after": "074620f004050e46",
+      "reason": "Keep raw kind in r7, use ordinary kind for native record lookup.",
+      "assembly": "mov r7, r0; bic r5, r0, #4; mov r6, r1",
+      "instructions": [
+        {
+          "pc": "0x1011c756",
+          "bytes": "0746",
+          "mnemonic": "mov",
+          "operands": "r7, r0"
+        },
+        {
+          "pc": "0x1011c758",
+          "bytes": "20f00405",
+          "mnemonic": "bic",
+          "operands": "r5, r0, #4"
+        },
+        {
+          "pc": "0x1011c75c",
+          "bytes": "0e46",
+          "mnemonic": "mov",
+          "operands": "r6, r1"
+        }
+      ]
+    },
+    {
+      "address": "0x1011c764",
+      "before": "b8420ed0",
+      "after": "1c280ed2",
+      "reason": "Selector returns 0..27 or 0xffff; equivalent rejection on that domain.",
+      "assembly": "cmp r0, #28; bhs #0x1011c786",
+      "instructions": [
+        {
+          "pc": "0x1011c764",
+          "bytes": "1c28",
+          "mnemonic": "cmp",
+          "operands": "r0, #0x1c"
+        },
+        {
+          "pc": "0x1011c766",
+          "bytes": "0ed2",
+          "mnemonic": "bhs",
+          "operands": "#0x1011c786"
+        }
+      ]
+    },
+    {
+      "address": "0x1011c78a",
+      "before": "526900eb8000484902eb0010843990f84025ca6190f8412581f8202090f8422581f8262090f84305c8670846f4f727fa2fe0",
+      "after": "526950235843121802f5a86247488438137807b1234600bf00bfc361537880f82030937880f82630d378c367f4f727fa2fe0",
+      "reason": "Original four-field construction with only the tagged ID35 gate zeroed.",
+      "assembly": "\n    ldr r2, [r2, #0x14]\n    movs r3, #80\n    muls r0, r3\n    adds r2, r2, r0\n    add.w r2, r2, #0x540\n    ldr r0, [pc, #0x11c]\n    subs r0, #0x84\n    ldrb r3, [r2]\n    cbz r7, original_gate\n    mov r3, r4\noriginal_gate:\n    nop\n    nop\n    str r3, [r0, #0x1c]\n    ldrb r3, [r2, #1]\n    strb.w r3, [r0, #0x20]\n    ldrb r3, [r2, #2]\n    strb.w r3, [r0, #0x26]\n    ldrb r3, [r2, #3]\n    str r3, [r0, #0x7c]\n    bl #0x10110c08\n    b #0x1011c81c\n",
+      "instructions": [
+        {
+          "pc": "0x1011c78a",
+          "bytes": "5269",
+          "mnemonic": "ldr",
+          "operands": "r2, [r2, #0x14]"
+        },
+        {
+          "pc": "0x1011c78c",
+          "bytes": "5023",
+          "mnemonic": "movs",
+          "operands": "r3, #0x50"
+        },
+        {
+          "pc": "0x1011c78e",
+          "bytes": "5843",
+          "mnemonic": "muls",
+          "operands": "r0, r3, r0"
+        },
+        {
+          "pc": "0x1011c790",
+          "bytes": "1218",
+          "mnemonic": "adds",
+          "operands": "r2, r2, r0"
+        },
+        {
+          "pc": "0x1011c792",
+          "bytes": "02f5a862",
+          "mnemonic": "add.w",
+          "operands": "r2, r2, #0x540"
+        },
+        {
+          "pc": "0x1011c796",
+          "bytes": "4748",
+          "mnemonic": "ldr",
+          "operands": "r0, [pc, #0x11c]"
+        },
+        {
+          "pc": "0x1011c798",
+          "bytes": "8438",
+          "mnemonic": "subs",
+          "operands": "r0, #0x84"
+        },
+        {
+          "pc": "0x1011c79a",
+          "bytes": "1378",
+          "mnemonic": "ldrb",
+          "operands": "r3, [r2]"
+        },
+        {
+          "pc": "0x1011c79c",
+          "bytes": "07b1",
+          "mnemonic": "cbz",
+          "operands": "r7, #0x1011c7a0"
+        },
+        {
+          "pc": "0x1011c79e",
+          "bytes": "2346",
+          "mnemonic": "mov",
+          "operands": "r3, r4"
+        },
+        {
+          "pc": "0x1011c7a0",
+          "bytes": "00bf",
+          "mnemonic": "nop",
+          "operands": ""
+        },
+        {
+          "pc": "0x1011c7a2",
+          "bytes": "00bf",
+          "mnemonic": "nop",
+          "operands": ""
+        },
+        {
+          "pc": "0x1011c7a4",
+          "bytes": "c361",
+          "mnemonic": "str",
+          "operands": "r3, [r0, #0x1c]"
+        },
+        {
+          "pc": "0x1011c7a6",
+          "bytes": "5378",
+          "mnemonic": "ldrb",
+          "operands": "r3, [r2, #1]"
+        },
+        {
+          "pc": "0x1011c7a8",
+          "bytes": "80f82030",
+          "mnemonic": "strb.w",
+          "operands": "r3, [r0, #0x20]"
+        },
+        {
+          "pc": "0x1011c7ac",
+          "bytes": "9378",
+          "mnemonic": "ldrb",
+          "operands": "r3, [r2, #2]"
+        },
+        {
+          "pc": "0x1011c7ae",
+          "bytes": "80f82630",
+          "mnemonic": "strb.w",
+          "operands": "r3, [r0, #0x26]"
+        },
+        {
+          "pc": "0x1011c7b2",
+          "bytes": "d378",
+          "mnemonic": "ldrb",
+          "operands": "r3, [r2, #3]"
+        },
+        {
+          "pc": "0x1011c7b4",
+          "bytes": "c367",
+          "mnemonic": "str",
+          "operands": "r3, [r0, #0x7c]"
+        },
+        {
+          "pc": "0x1011c7b6",
+          "bytes": "f4f727fa",
+          "mnemonic": "bl",
+          "operands": "#0x10110c08"
+        },
+        {
+          "pc": "0x1011c7ba",
+          "bytes": "2fe0",
+          "mnemonic": "b",
+          "operands": "#0x1011c81c"
+        }
+      ]
+    }
+  ],
+  "crc": {
+    "algorithm": "CRC-HQX",
+    "initial": 0,
+    "tail_byteorder": "big",
+    "tail": "bf8d",
+    "whole_residue": 0
+  },
+  "semantic_variable": "ID35 global gate = 0 at static call 10179d56; other validated public calls preserve calibration values.",
+  "scope": "One observed static frontend call, not independently established NEF-format-exclusive or exhaustive camera-mode coverage.",
+  "instruction_change_bytes": 51,
+  "crc_change_bytes": 2,
+  "native_pairs": 244,
+  "physical_pixels_verified": false,
+  "installation_review_complete": false
+}

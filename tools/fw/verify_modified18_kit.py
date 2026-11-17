@@ -1,0 +1,69 @@
+"""Independent offline verification of the final Modified18 (Design A1: Color Space Switchable Astro RAW + Permanent 30-600s v2) delivery kit."""
+from __future__ import annotations
+import argparse
+import binascii
+import hashlib
+import json
+from pathlib import Path
+
+DIGESTS = {
+    "modified18": "5d404ea3707796c895782ebe75288763a67a238b7cac6cfce6dec71ba04dd157",
+    "modified15": "0f5ea787e02d982625ae0dbca47e389a4b368893ac485285081d8d1246f7be2c",
+    "modified13": "3602bcb0fbe1f9cac6722f9a229afafc0cb063c7bd660778f9ccc31089198749",
+    "modified12": "9734012be0e063fa8f2ccbf77c2dd5a63a76be2f45887aa6b806b97b441cb67c",
+    "stock": "1e6348d58750e67372d0a8e363932c57ee9c04d0eb8f62803bcd19812df0d25c",
+}
+PATHS = {
+    "modified18": "01_TEST_MODIFIED18/EG162080.BIN",
+    "modified15": "02_BACK_TO_MODIFIED15/EG162080.BIN",
+    "modified13": "03_BACK_TO_MODIFIED13/EG162080.BIN",
+    "modified12": "04_BACK_TO_MODIFIED12/EG162080.BIN",
+    "stock": "05_STOCK_C380/EG162080.BIN",
+}
+SIZE = 33502842
+
+
+def sha(b: bytes) -> str:
+    return hashlib.sha256(b).hexdigest()
+
+
+def need(cond: bool, msg: str) -> None:
+    if not cond:
+        raise AssertionError(msg)
+
+
+def check_kit(kit_dir: Path) -> dict:
+    blobs = {}
+    for name, rel in PATHS.items():
+        p = kit_dir / rel
+        need(p.is_file(), f"Missing file: {rel}")
+        b = p.read_bytes()
+        need(len(b) == SIZE, f"Wrong size for {rel}: {len(b)} != {SIZE}")
+        digest = sha(b)
+        need(digest == DIGESTS[name], f"Hash mismatch for {rel}: {digest} != {DIGESTS[name]}")
+        need(binascii.crc_hqx(b, 0) == 0, f"CRC failure for {rel}")
+        blobs[name] = b
+
+    return {
+        "status": "PASS",
+        "verified_slots": len(blobs),
+        "digests": {k: sha(v) for k, v in blobs.items()},
+    }
+
+
+def main() -> None:
+    ap = argparse.ArgumentParser(description=__doc__)
+    ap.add_argument("kit_dir", type=Path, nargs="?")
+    args = ap.parse_args()
+
+    root = Path(__file__).resolve().parents[2]
+    kit_dir = args.kit_dir or (root / "outputs/Z6-C380-modified18-reviewed-2026-11-15")
+    kit_dir = kit_dir.resolve()
+    print(f"Checking kit directory: {kit_dir}")
+    res = check_kit(kit_dir)
+    print(json.dumps(res, indent=2))
+    print("\nModified18 delivery kit verification PASSED!")
+
+
+if __name__ == "__main__":
+    main()

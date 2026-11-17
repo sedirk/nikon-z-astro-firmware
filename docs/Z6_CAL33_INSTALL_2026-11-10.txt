@@ -1,0 +1,60 @@
+Z6 C3.80 modified6：静态 CAL33 control18 单变量测试包
+日期：2026-11-10
+
+这是已完成离线审查、尚待实机验收的实验候选，目标是检验机身前端标定对彩圈的影响。
+它基于 modified4，保留十处既有补丁，只新增静态构建阶段的一项控制置零。
+modified5 保持撤回；本包没有 modified5。用户已确认机身恢复。
+
+包内选择（一次仅选一份）
+01_TEST_MODIFIED6/EG162080.BIN       本次测试
+02_BACK_TO_MODIFIED4/EG162080.BIN   默认回退与 A 组对照
+03_DARK_ONLY_MODIFIED1/EG162080.BIN 仅已测试暗场补丁
+04_STOCK_C380/EG162080.BIN          原版 C3.80 主模块
+
+四份文件大小均为 33,502,842 字节，只适用一代 Nikon Z6 C3.80 项目。
+菜单继续显示 C3.80，不能用菜单版本区分这些文件，必须记录 SHA-256。
+本次 TEST SHA-256：
+5c1cdfcd11ccfef301317118c43954bf6b55a50e6574ea66ba941e2f9a716003
+modified4 回退 SHA-256：
+bdf30026dc9d18b09a5ca9332369d126729d63a36013e94b8b20cf6638a4ef1b
+
+1. 刷入前先拍 A 组
+在当前已经恢复的固件上，确认其实际安装文件并记录。
+若恢复的是 modified4，就用它作为本轮 A；若实际恢复了其他版本，按实际标注，先不要混为 modified4。
+暗角控制、自动失真控制、衍射补偿三项保持关闭。
+先拍新的固定布置 A 组，详见 FLAT_COMPARE.txt；不要用布置改变过的旧平场替代主对照。
+
+2. 检查整个包
+在 PowerShell 执行（路径含空格时保留引号）：
+& '<repo-root>\work\re_env\Scripts\python.exe' -X utf8 '<repo-root>\outputs\Z6-C380-cal33-control18-reviewed-2026-11-10\verify.py'
+必须得到 ok: true。校验器只读，不复制、不安装。
+
+3. 准备存储卡并检查卡上的文件
+使用已验证可正常使用的卡、充足电量；备份卡内照片。
+将选定目录内唯一的 EG162080.BIN 复制到卡根目录，保留文件名。
+根目录只留这一份固件；不要把四个版本一起复制，也不要留下 .BIN.bak 等混淆副本。
+下面以 E: 为示例，替换成你实际存储卡盘符；不要把项目磁盘当成卡操作。
+& '<repo-root>\work\re_env\Scripts\python.exe' -X utf8 '<repo-root>\outputs\Z6-C380-cal33-control18-reviewed-2026-11-10\verify.py' --card-root 'E:\' --mode test
+必须得到 ok: true 且 card.mode=test、哈希为上面的 TEST 值。
+
+4. 相机菜单更新
+使用已有的固件版本/更新菜单流程。更新期间不关机、不拔卡、不拆电池。
+若菜单未识别文件或显示错误机型/异常项目，就停止，不改名强行尝试。
+完成后按相机提示重启，记录时间、使用的目录和校验结果。
+本轮保持普通静态、机械快门测试。尚未验证其他快门/视频/连拍模式。
+
+5. 先做一张普通 NEF
+先拍一张普通照片，确认释放快门、保存、回放、返回取景均正常。
+通过后再拍 B 组平场，以及 5 秒暗场与 bias。异常就停止重复按快门。
+离线验证覆盖字节/流程/更新与回退模型；本版本尚没有实机快门和消圈结论。
+
+6. 回退
+如出现此前那类 Err、重启或无法正常保存，停止重复触发。
+从 02_BACK_TO_MODIFIED4 取 EG162080.BIN 替换卡根目录固件，再运行校验：
+& '<repo-root>\work\re_env\Scripts\python.exe' -X utf8 '<repo-root>\outputs\Z6-C380-cal33-control18-reviewed-2026-11-10\verify.py' --card-root 'E:\' --mode modified4
+确认后用相机更新菜单回退。不要使用旧 modified5。
+若要回退暗场专版/原版，分别使用相应目录，校验模式改为 modified1/stock。
+若菜单也无法进入，停止继续刷写或反复尝试，并保留异常经过。
+
+本次离线回退模型通过；新候选实际安装和回退仍以相机行为为准。
+04_STOCK 是原版主模块；项目 firmware/original/Z_6_0380.bin 完整原固件也继续保留。

@@ -1,0 +1,18 @@
+{
+  "schema": 1,
+  "model": "Nikon Z6 (first generation)",
+  "version": "C3.80",
+  "module": "eg1620_038000.bi",
+  "load_base": "0x10020000",
+  "source_size": 33502842,
+  "source_sha256": "1e6348d58750e67372d0a8e363932c57ee9c04d0eb8f62803bcd19812df0d25c",
+  "status": "experimental native full-size predicate; camera pixel effect pending",
+  "candidates": [
+    {
+      "id": "still-preserve-fullsize-raw",
+      "scope": "Change only the predicate call inside 0x100ae33e; existing special-kind exclusions and destination checks remain",
+      "intent": "Use native 0x101ba4b6 instead of 0x101ba474: retain current input RAW for owner+0x192=0, keep original replacement behavior for other RAW sizes; global helpers are unchanged",
+      "edits": [{"address": "0x100ae3a4", "before": "0cf166f8", "after": "0cf187f8", "instruction_before": "bl #0x101ba474", "instruction_after": "bl #0x101ba4b6"}]
+    }
+  ]
+}

@@ -1,0 +1,30 @@
+{
+  "schema": 1,
+  "model": "Nikon Z6 (first generation)",
+  "version": "C3.80",
+  "module": "eg1620_038000.bi",
+  "load_base": "0x10020000",
+  "source_size": 33502842,
+  "source_sha256": "1e6348d58750e67372d0a8e363932c57ee9c04d0eb8f62803bcd19812df0d25c",
+  "status": "experimental decoded-module candidates; hardware pixel effect pending",
+  "candidates": [
+    {
+      "id": "negative-only",
+      "scope": "Shared parameter generator; diagnostic comparator, not restricted to stills",
+      "intent": "Write zero to all four negative-offset slots while preserving the original scalar and 0x720 calculation",
+      "edits": [{"address": "0x1019f448", "before": "4042", "after": "0020", "instruction_before": "rsbs r0, r0, #0", "instruction_after": "movs r0, #0"}]
+    },
+    {
+      "id": "still-offset-source-zero",
+      "scope": "Still-frame property builder 0x100c24f2; observed direct caller 0x100c2824",
+      "intent": "Use zero for properties+0x86 without editing owner BlackLevel, global config 0x3e1 or front-end calibration; uncached 0x720 follows the original recalculation",
+      "edits": [{"address": "0x100c2790", "before": "b1f89c11", "after": "4ff00001", "instruction_before": "ldrh.w r1, [r1, #0x19c]", "instruction_after": "mov.w r1, #0"}]
+    },
+    {
+      "id": "still-preserve-front-raw",
+      "scope": "Still RAW request builder 0x100ae33e; leave request+0x1a8 zero after native request clearing",
+      "intent": "Omit the optional backend replacement RAW destination so the subsequent native handle-selection block retains the front RAW handle for encoding; front processing remains in place",
+      "edits": [{"address": "0x100ae3b0", "before": "c5f8a801", "after": "00bf00bf", "instruction_before": "str.w r0, [r5, #0x1a8]", "instruction_after": "nop; nop"}]
+    }
+  ]
+}

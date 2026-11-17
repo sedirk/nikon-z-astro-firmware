@@ -1,0 +1,42 @@
+# Binary firmware, decoded firmware, and raw image dumps
+firmware/original/
+firmware/decoded/
+*.bin
+*.BIN
+*.bin.lab
+*.bi
+*.nef
+*.NEF
+samples/*
+!samples/README.md
+
+# System / OS caches
+%SystemDrive%/
+Thumbs.db
+.DS_Store
+
+# Temporary work and virtual environments
+work/
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+.idea/
+.vscode/
+*.tmp
+*.log
+
+# Large binary test outputs, intermediate analysis logs and work caches
+outputs/
+analysis/
+logs/
+references/
+manifests/
+*.npz
+*.dmp
+*.raw
+*.lab
+*.RECALLED
+
+# Local machine handoff notes (unshared)
+START_HERE*.txt

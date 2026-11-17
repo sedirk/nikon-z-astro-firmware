@@ -1,0 +1,99 @@
+{
+  "schema": 1,
+  "model": "Nikon Z6 (first generation)",
+  "version": "C3.80",
+  "module": "eg1620_038000.bi",
+  "load_base": "0x10020000",
+  "source_size": 33502842,
+  "source_sha256": "1e6348d58750e67372d0a8e363932c57ee9c04d0eb8f62803bcd19812df0d25c",
+  "status": "LAB ONLY: numeric front bit11 disable experiment; ISP stage identity and physical ring effect unresolved; not preflash reviewed",
+  "candidates": [
+    {
+      "id": "modified3-front-bit11-off-lab",
+      "scope": "Inherit modified3 exactly. Replace only the static-exposure input read at 100f64b4 with native override value 2. Does not edit owner objects, shared policy builder, calibration payloads, updater or RAW pointers. Static exposure is not established to be NEF-exclusive.",
+      "intent": "Test a single front policy bit using the existing native off branch. This is not an identified ring-removal patch; zero synthetic calibration can already leave the bit clear.",
+      "edits": [
+        {
+          "address": "0x100c2654",
+          "before": "00f065fa",
+          "after": "4ff00000",
+          "instruction_before": "bl #0x100c2b22",
+          "instruction_after": "mov.w r0, #0"
+        },
+        {
+          "address": "0x100c267c",
+          "before": "00f045fa",
+          "after": "4ff00200",
+          "instruction_before": "bl #0x100c2b0a",
+          "instruction_after": "mov.w r0, #2"
+        },
+        {
+          "address": "0x100c2690",
+          "before": "90f81a18",
+          "after": "4ff00201",
+          "instruction_before": "ldrb.w r1, [r0, #0x81a]",
+          "instruction_after": "mov.w r1, #2"
+        },
+        {
+          "address": "0x100c28b2",
+          "before": "84f86200",
+          "after": "84f86290",
+          "instruction_before": "strb.w r0, [r4, #0x62]",
+          "instruction_after": "strb.w sb, [r4, #0x62]"
+        },
+        {
+          "address": "0x100c28c8",
+          "before": "84f86390",
+          "after": "84f86300",
+          "instruction_before": "strb.w sb, [r4, #0x63]",
+          "instruction_after": "strb.w r0, [r4, #0x63]"
+        },
+        {
+          "address": "0x100c2964",
+          "before": "90f85f02",
+          "after": "4ff00100",
+          "instruction_before": "ldrb.w r0, [r0, #0x25f]",
+          "instruction_after": "mov.w r0, #1"
+        },
+        {
+          "address": "0x1019741a",
+          "before": "59b1",
+          "after": "0ee0",
+          "instruction_before": "cbz r1, #0x10197434",
+          "instruction_after": "b #0x1019743a",
+          "reason": "After native flag/coordinate setup, enter the original zero-table function without copying cached coefficients or evaluating lens grids."
+        },
+        {
+          "address": "0x10197868",
+          "before": "4e77",
+          "after": "4a77",
+          "instruction_before": "strb r6, [r1, #0x1d]",
+          "instruction_after": "strb r2, [r1, #0x1d]",
+          "reason": "Ordinary enabled-source case exports active=0 using r2 already zero; retain inhibit and coordinate rules."
+        },
+        {
+          "address": "0x10197876",
+          "before": "4078",
+          "after": "0020",
+          "instruction_before": "ldrb r0, [r0, #1]",
+          "instruction_after": "movs r0, #0",
+          "reason": "Cached non-inhibited case exports active=0; cache contents are not modified."
+        },
+        {
+          "address": "0x100f64b4",
+          "before": "90f85902",
+          "after": "4ff00200",
+          "instruction_before": "ldrb.w r0, [r0, #0x259]",
+          "instruction_after": "mov.w r0, #2",
+          "reason": "Static input+45 -> context+5d -> original 1011d866 writes control[2]=0 -> master bit11 cleared; preserve original flags and source objects."
+        }
+      ]
+    }
+  ],
+  "physical_reference": {
+    "version": "modified3",
+    "sha256": "a8ec90a9b55b2eefcd46e13b0f6acd0b7aa1bc4d9d127d701dee89154b8b04bd",
+    "report": "docs/MODIFIED3_REAL_NEF_2026-11-09.md",
+    "result": "Dark point regression retained; current screen-flat broad rings not overall improved."
+  }
+}

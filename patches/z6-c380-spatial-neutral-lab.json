@@ -1,0 +1,85 @@
+{
+  "schema": 1,
+  "model": "Nikon Z6 (first generation)",
+  "version": "C3.80",
+  "module": "eg1620_038000.bi",
+  "load_base": "0x10020000",
+  "source_size": 33502842,
+  "source_sha256": "1e6348d58750e67372d0a8e363932c57ee9c04d0eb8f62803bcd19812df0d25c",
+  "status": "LAB ONLY: shared two-17-table neutral control; native call/ABI/retained-state review required; no physical pixel result or installation approval",
+  "candidates": [
+    {
+      "id": "neighborhood-vignette-spatial-neutral-lab",
+      "scope": "Retain modified1 neighborhood and modified2 vignette edits. The three new edits are in shared spatial functions 10197410/10197820, covering both precomputed and main-generated two-17 paths, including non-static callers. Native coordinate/inhibit rules, cache mode of unrelated consumers, calibration contents and RAW routing are preserved.",
+      "intent": "Single additional processing family versus modified2. Zero tables and active=0 are offline configuration goals; physical ring removal and preview/JPEG effects require actual NEFs and hardware testing.",
+      "edits": [
+        {
+          "address": "0x100c2654",
+          "before": "00f065fa",
+          "after": "4ff00000",
+          "instruction_before": "bl #0x100c2b22",
+          "instruction_after": "mov.w r0, #0"
+        },
+        {
+          "address": "0x100c267c",
+          "before": "00f045fa",
+          "after": "4ff00200",
+          "instruction_before": "bl #0x100c2b0a",
+          "instruction_after": "mov.w r0, #2"
+        },
+        {
+          "address": "0x100c2690",
+          "before": "90f81a18",
+          "after": "4ff00201",
+          "instruction_before": "ldrb.w r1, [r0, #0x81a]",
+          "instruction_after": "mov.w r1, #2"
+        },
+        {
+          "address": "0x100c28b2",
+          "before": "84f86200",
+          "after": "84f86290",
+          "instruction_before": "strb.w r0, [r4, #0x62]",
+          "instruction_after": "strb.w sb, [r4, #0x62]"
+        },
+        {
+          "address": "0x100c28c8",
+          "before": "84f86390",
+          "after": "84f86300",
+          "instruction_before": "strb.w sb, [r4, #0x63]",
+          "instruction_after": "strb.w r0, [r4, #0x63]"
+        },
+        {
+          "address": "0x100c2964",
+          "before": "90f85f02",
+          "after": "4ff00100",
+          "instruction_before": "ldrb.w r0, [r0, #0x25f]",
+          "instruction_after": "mov.w r0, #1"
+        },
+        {
+          "address": "0x1019741a",
+          "before": "59b1",
+          "after": "0ee0",
+          "instruction_before": "cbz r1, #0x10197434",
+          "instruction_after": "b #0x1019743a",
+          "reason": "After native flag/coordinate setup, enter the original zero-table function without copying cached coefficients or evaluating lens grids."
+        },
+        {
+          "address": "0x10197868",
+          "before": "4e77",
+          "after": "4a77",
+          "instruction_before": "strb r6, [r1, #0x1d]",
+          "instruction_after": "strb r2, [r1, #0x1d]",
+          "reason": "Ordinary enabled-source case exports active=0 using r2 already zero; retain inhibit and coordinate rules."
+        },
+        {
+          "address": "0x10197876",
+          "before": "4078",
+          "after": "0020",
+          "instruction_before": "ldrb r0, [r0, #1]",
+          "instruction_after": "movs r0, #0",
+          "reason": "Cached non-inhibited case exports active=0; cache contents are not modified."
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,26 @@
+{
+  "schema": 1,
+  "model": "Nikon Z6 (first generation)",
+  "version": "C3.80",
+  "module": "eg1620_038000.bi",
+  "load_base": "0x10020000",
+  "source_size": 33502842,
+  "source_sha256": "1e6348d58750e67372d0a8e363932c57ee9c04d0eb8f62803bcd19812df0d25c",
+  "status": "isolated native control experiment; 112-site fingerprint attribution and camera NEF pixels pending",
+  "candidates": [
+    {
+      "id": "still-class-1aec-zero",
+      "scope": "Only the owner+1aec store in the still producer segment at 0x10146efe. The preceding 0x10146f1e instruction sets r7=0; r0 and all helper return values remain intact.",
+      "intent": "Force this producer's calibration class to zero. Trace owner+1aec -> props+4c -> A+17a/+cc/+cd -> bank+584/+594. Separate override paths can still enable a control; this is not a universal RAW correction bypass.",
+      "edits": [
+        {
+          "address": "0x10146f24",
+          "before": "81f8ec0a",
+          "after": "81f8ec7a",
+          "instruction_before": "strb.w r0, [r1, #0xaec]",
+          "instruction_after": "strb.w r7, [r1, #0xaec]"
+        }
+      ]
+    }
+  ]
+}

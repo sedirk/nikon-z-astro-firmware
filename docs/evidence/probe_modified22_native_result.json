@@ -1,0 +1,29 @@
+{
+  "candidate": "modified22-color-space-pid0526-astro-raw-srgb-600s-v1",
+  "design": "A1 v5 (Genuine Color space PID 0x0526 RAM 0xC24CDEA0 gate + Effective Color Space PID 0x130A sRGB lock at 0x1014BB28 + Auto ISO PID 0x0508/0x1381 restored to Stock + '标准 (sRGB)' / '直通RAW (sRGB)' 36-lang UI) + Post-Exposure Interval Timer (0x101FF392) + Dynamic Exposure-Aware Interval End Day/Time (0x1049C26C) + Permanent 30-600s v2",
+  "modified22_sha256": "c6a23ea40f03d83c6c721e96e8b5af8a8422a7b4ed81d39222392b7635681771",
+  "tests": {
+    "e2e_native_predicate_cases": 30,
+    "ui_submenu_0x104a149e_0x104a14a8_verified": true,
+    "u1_u3_banks_0526_verified": true,
+    "m20_and_m21_real_sample_failure_reproduced_and_fixed": {
+      "m20_astro": 0,
+      "m21_astro": 0,
+      "m21_130a": 1,
+      "m21_dcf_prefix": "_Z61",
+      "m22_astro": 1,
+      "m22_130a": 0,
+      "m22_dcf_prefix_z61": "Z61_",
+      "m22_dcf_prefix_dsc": "DSC_"
+    },
+    "color_space_130a_srgb_lock_cases": 30,
+    "auto_iso_0508_1381_stock_parity_cases": 14,
+    "all_13_hook_sites_dual_branch_cases": 28,
+    "ui_36_languages_string_checks": 360,
+    "stock_bug_reproductions": 3,
+    "m20_interval_post_exposure_sequences": 8,
+    "verified_64bit_low_word_carries": 1,
+    "interval_endtime_native_cases": 37
+  },
+  "status": "PASS"
+}

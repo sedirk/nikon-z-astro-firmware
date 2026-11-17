@@ -1,0 +1,40 @@
+{
+  "schema": 1,
+  "model": "Nikon Z6 (first generation)",
+  "version": "C3.80",
+  "module": "eg1620_038000.bi",
+  "load_base": "0x10020000",
+  "source_size": 33502842,
+  "source_sha256": "1e6348d58750e67372d0a8e363932c57ee9c04d0eb8f62803bcd19812df0d25c",
+  "status": "independent static-property control candidate; hardware NEF effect requires separate validation",
+  "candidates": [
+    {
+      "id": "still-neighborhood-gates-off",
+      "scope": "Only the normal static-property branch of 0x100c24f2. Select class 0 and both existing forced-off branches (properties +4e=2, +4f=2). The alternate builder-mode branch already zeros these fields and is unchanged.",
+      "intent": "Prevent classification and override fields from re-enabling bank+584; clear class-2 controls at bank+594. Preserve descriptor selection, RAW output enable, threshold tables, BlackLevel and other processing parameters. Hardware identity and attribution to the 112 max8+8*k points remain hypotheses.",
+      "edits": [
+        {
+          "address": "0x100c2654",
+          "before": "00f065fa",
+          "after": "4ff00000",
+          "instruction_before": "bl #0x100c2b22",
+          "instruction_after": "mov.w r0, #0"
+        },
+        {
+          "address": "0x100c267c",
+          "before": "00f045fa",
+          "after": "4ff00200",
+          "instruction_before": "bl #0x100c2b0a",
+          "instruction_after": "mov.w r0, #2"
+        },
+        {
+          "address": "0x100c2690",
+          "before": "90f81a18",
+          "after": "4ff00201",
+          "instruction_before": "ldrb.w r1, [r0, #0x81a]",
+          "instruction_after": "mov.w r1, #2"
+        }
+      ]
+    }
+  ]
+}
