@@ -1,5 +1,7 @@
 # 专题报告 01：天文直通 RAW 链路重构与同心彩圈根除原理
 
+> 🌐 **语言 / Language**: **简体中文** | **[English](01_ASTRO_RAW_AND_CONCENTRIC_RINGS_EN.md)** · 🏠 [返回文档索引](README.md)
+
 ## 1. 问题背景与实测现象 (The Concentric Rings Problem)
 
 在尼康初代微单 Z6 / Z7 官方固件中，天文摄影用户在进行长时间曝光并叠加平场（Flat frames）后，无论在机身菜单中如何关闭「暗角控制」、「自动失真控制」与「衍射补偿」，经过深空后期极度非线性拉伸（如 STF / MaskedStretch），图像中心至边缘均会浮现出严重的**同心彩圈（Concentric Colored Rings）**。

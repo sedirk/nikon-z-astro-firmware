@@ -1,19 +1,24 @@
 # 工具与构建说明 (Tools & Build Guide)
 
-本仓库的核心固件构建、容器解包与仓库卫生校验工具均基于 **Python 3.10+ 标准库**编写，在项目根目录下即可直接运行，不连接相机、不直接刷写硬件，亦不捆绑任何原厂专有二进制或第三方预计算密钥表。
+> 🌐 **语言 / Language**: **简体中文** | **[English](TOOLS_EN.md)** · 🏠 [返回项目主页](../README.md)
+
+本仓库的核心固件构建、容器解包与仓库卫生校验工具均基于 **Python 3.10+ 标准库**编写，在项目根目录下即可直接运行，不连接相机、不直接刷写硬件，亦不在 Git 源码库中捆绑原厂二进制或第三方预计算密钥表。
+
+> [!TIP]
+> 如无需本地编译，可直接前往 **[GitHub Releases (`v3.80-modified22`)](https://github.com/sedirk/nikon-z-astro-firmware/releases/tag/v3.80-modified22)** 下载已打包好的 [`Nikon-Z6-C380-Modified22-Astro-Firmware.zip`](https://github.com/sedirk/nikon-z-astro-firmware/releases/download/v3.80-modified22/Nikon-Z6-C380-Modified22-Astro-Firmware.zip)，解压后运行包内的 `python verify.py` 即可离线完成完整性核验。
 
 ---
 
-## 1. 生产固件构建与完整性校验（面向所有用户）
+## 1. 生产固件可复现构建与完整性校验（面向所有用户）
 
-将合法取得的尼康官方 Z6 C3.80 固件文件 `Z_6_0380.bin`（SHA-256: `ff978ffdf77c58c0b861a06e16d432d5886969f3cdd05d62f6c8e82e8a4cea54`）传入独立构建器：
+将合法取得的尼康官方 Z6 C3.80 固件文件 `Z_6_0380.bin`（SHA-256: `ff978ffdf77c58c0b861a06e16d432d5886969f3cdd05d62f6c8e82e8a4cea54`）传入独立构建器，即可复现与 GitHub Release 完全一致的固件目录及确定性 `.zip` 归档：
 
 ```powershell
-# 标准构建（仅需 Python 3.10+ 标准库）
-python tools/build_modified22.py --stock path\to\Z_6_0380.bin --output-dir outputs\Z6-C380-modified22-local-build
+# 标准构建并打包确定性 .zip（仅需 Python 3.10+ 标准库）
+python tools/build_modified22.py --stock path\to\Z_6_0380.bin --output-dir outputs\Nikon-Z6-C380-Modified22-Astro-Firmware --zip
 
-# 对已生成的固件包执行独立只读校验（尺寸、SHA-256、CRC-16/XMODEM、PID 0x0526 / 0x130A 机器码不变量）
-python tools/build_modified22.py --verify outputs\Z6-C380-modified22-local-build
+# 对已生成或从 Release 解压的固件包执行独立只读校验（尺寸、SHA-256、CRC-16/XMODEM、PID 0x0526 / 0x130A 机器码不变量）
+python tools/build_modified22.py --verify outputs\Nikon-Z6-C380-Modified22-Astro-Firmware
 ```
 
 若本地已安装反汇编校验依赖（`pip install capstone`），还可附加 `--rebuild-from-source` 参数，从 `tools/fw/` 下的 Thumb 汇编发射器现场重编译全部补丁指令并与冻结的 [`patches/z6-c380-modified22-color-space-pid0526-srgb-600s.json`](../patches/z6-c380-modified22-color-space-pid0526-srgb-600s.json) 逐字节比对：

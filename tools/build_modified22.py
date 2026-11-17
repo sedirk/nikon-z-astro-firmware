@@ -21,6 +21,7 @@ import shutil
 import struct
 import sys
 import tempfile
+import zipfile
 
 THIS_DIR = Path(__file__).resolve().parent
 PROJECT_ROOT = THIS_DIR.parent
@@ -216,35 +217,71 @@ def _validate_safe_output_dir(
             )
 
 
-FLASH_GUIDE = """Nikon Z6 C3.80 Astro Firmware (Modified22) — Local Build Package
-================================================================
+FLASH_GUIDE = """Nikon Z6 C3.80 Astro Firmware (Modified22) — Flash & Usage Guide (中英双语刷机指南)
+================================================================================
 
-1. Pre-Flash Checksum Verification:
-   Verify SHA-256 of `01_MODIFIED22/EG162080.BIN` before copying to card:
-     Expected Size   : 33,502,842 bytes
-     Expected SHA256 : c6a23ea40f03d83c6c721e96e8b5af8a8422a7b4ed81d39222392b7635681771
-     Expected CRC16  : 0x48f3 (full-module XMODEM remainder 0x0000)
+[简体中文说明]
+--------------------------------------------------------------------------------
+1. 目录结构与刷机前校验 (Pre-Flash Verification)：
+   - 01_MODIFIED22/EG162080.BIN          : Modified22 天文增强固件主模块
+       * 文件大小 : 33,502,842 字节
+       * SHA-256  : c6a23ea40f03d83c6c721e96e8b5af8a8422a7b4ed81d39222392b7635681771
+       * CRC-16   : 0x48f3 (全模块 XMODEM 余数为 0x0000)
+   - 02_STOCK_C380_ROLLBACK/EG162080.BIN : 尼康官方原厂 C3.80 回退模块
+       * 文件大小 : 33,502,842 字节
+       * SHA-256  : 1e6348d58750e67372d0a8e363932c57ee9c04d0eb8f62803bcd19812df0d25c
+   - 刷机前可在解压目录运行 `python verify.py` 离线核验全部哈希、CRC16 与 104 处补丁字节。
+   - 说明：`EG162080.BIN` 为尼康 Z6 机身升级程序直接识别的主固件模块文件（非外层 Z_6_0380.bin 容器）。
 
-   Note: `EG162080.BIN` is the camera's decoded main firmware module read directly
-   by Setup Menu -> Firmware version -> Update (not an outer 4-module Z_6_0380.bin).
+2. 天文拍摄核心设置（必读 / IMPORTANT）：
+   - 照片拍摄菜单 -> 天文直通RAW模式 (原“色空间”项)：
+       * 标准 (sRGB)    : 100% 恢复官方原厂 C3.80 图像流水线
+       * 直通RAW (sRGB) : 启用 13 处天文直通 RAW 旁路（消除同心彩圈与吃星），保持 sRGB 命名与色彩
+   - NEF(RAW)记录 -> NEF(RAW)压缩：
+       * 位深度：14位 (14-bit)
+       * 压缩类型：【无损压缩 (Lossless compressed)】（>= 1 秒长曝光必选！）
+       * 注意：开启「直通RAW (sRGB)」拍摄 >= 1s 曝光时，请勿同时选择「未压缩 (Uncompressed)」。
+   - M 档扩展慢门：拨至 M 档，主指令拨盘越过 30" 后可直接选择 60"~600" 共 8 档长曝光。
 
-2. Recommended Astro RAW Camera Settings (Important):
-   - Photo Shooting Menu -> Astro RAW mode (天文直通RAW模式):
+3. 刷入与回退步骤：
+   - 使用相机内格式化过的 XQD / CFexpress 存储卡，并装入满电原厂电池；
+   - 将 `01_MODIFIED22/EG162080.BIN` 复制到存储卡根目录（卡根目录只保留这一个 .BIN 文件）；
+   - 开机进入「设定菜单 -> 固件版本 -> 版本升级」，按屏幕提示完成升级（全程严禁断电或拔卡）；
+   - 随时回退原厂：将 `02_STOCK_C380_ROLLBACK/EG162080.BIN` 放入存储卡根目录执行「版本升级」即可。
+
+
+[English Guide]
+--------------------------------------------------------------------------------
+1. Package Layout & Pre-Flash Checksum Verification:
+   - 01_MODIFIED22/EG162080.BIN          : Modified22 Astro Firmware main module
+       * Expected Size   : 33,502,842 bytes
+       * Expected SHA256 : c6a23ea40f03d83c6c721e96e8b5af8a8422a7b4ed81d39222392b7635681771
+       * Expected CRC16  : 0x48f3 (full-module XMODEM remainder 0x0000)
+   - 02_STOCK_C380_ROLLBACK/EG162080.BIN : Official Nikon Stock C3.80 rollback module
+       * Expected Size   : 33,502,842 bytes
+       * Expected SHA256 : 1e6348d58750e67372d0a8e363932c57ee9c04d0eb8f62803bcd19812df0d25c
+   - Run `python verify.py` inside this folder before flashing to verify SHA-256, CRC16, and all 104 patch sites.
+   - Note: `EG162080.BIN` is the decoded main firmware module read directly by Setup Menu -> Firmware version -> Update.
+
+2. Recommended Astro RAW Camera Settings (IMPORTANT):
+   - Photo Shooting Menu -> Astro RAW mode (天文直通RAW模式, replaces Color space):
        * Standard (sRGB)  [标准 (sRGB)]    : 100% factory Stock C3.80 ISP pipeline
-       * Astro RAW (sRGB) [直通RAW (sRGB)] : 13-site Astro RAW bypass + sRGB naming/EXIF
+       * Astro RAW (sRGB) [直通RAW (sRGB)] : 13-site Astro RAW bypass + standard Z61_xxxx.NEF / sRGB EXIF
    - NEF (RAW) recording:
        * NEF (RAW) bit depth   : 14-bit
-       * NEF (RAW) compression : Lossless compressed (无损压缩) [REQUIRED for >=1s long exposures]
-         (Caution: Do NOT combine 'Astro RAW' + 'Uncompressed / 未压缩' on >=1s exposures;
-          see docs/MODIFIED22_REAL_NEF_AUDIT_2026-11-17.md for raw format-3 buffer details.)
+       * NEF (RAW) compression : Lossless compressed [REQUIRED for >= 1s long exposures]
+         (Caution: Do NOT combine 'Astro RAW' + 'Uncompressed' on >= 1s exposures; see audit report in repository.)
+   - Extended Shutter: In M mode, rotate the main command dial past 30" to select 60", 90", 120", 180", 240", 300", 480", 600".
 
-3. Flashing Steps:
+3. Flashing & Rollback Steps:
    - Format an XQD / CFexpress card in-camera and insert a fully charged Nikon battery.
-   - Copy ONLY ONE `EG162080.BIN` (`01_MODIFIED22/EG162080.BIN`) to the root directory of the card.
+   - Copy ONLY ONE `EG162080.BIN` (`01_MODIFIED22/EG162080.BIN`) to the root directory of the memory card.
    - Navigate to Setup Menu -> Firmware version -> Update and follow on-screen prompts.
    - NEVER power off or remove battery/card during flashing.
-   - To revert to factory firmware at any time when the menu is accessible, place
+   - To revert to official factory C3.80 at any time while the menu is accessible, place
      `02_STOCK_C380_ROLLBACK/EG162080.BIN` at the card root and run Firmware Update.
+
+Source Code & GPL-3.0 License: https://github.com/sedirk/nikon-z-astro-firmware
 """
 
 
@@ -310,6 +347,11 @@ def main() -> None:
         help="Allow replacing an existing output directory after staged build succeeds",
     )
     ap.add_argument(
+        "--zip",
+        action="store_true",
+        help="Also package a sibling <output-dir>.zip archive ready for distribution",
+    )
+    ap.add_argument(
         "--verify",
         type=Path,
         default=None,
@@ -344,14 +386,32 @@ def main() -> None:
         if sha256_hex(slot_stk.read_bytes()) != STOCK_EG_SHA256:
             raise ValueError("Staged Stock rollback readback mismatch")
 
-        (staging_dir / "FLASH_INSTRUCTIONS.txt").write_text(FLASH_GUIDE, encoding="utf-8")
-        (staging_dir / "SHA256SUMS.txt").write_text(
+        def _write_lf_text(dst: Path, text: str) -> None:
+            dst.write_bytes(text.replace("\r\n", "\n").encode("utf-8"))
+
+        audit_dir = staging_dir / "audit"
+        audit_dir.mkdir(parents=True, exist_ok=True)
+        _write_lf_text(
+            audit_dir / "modified22-manifest.json",
+            args.recipe.resolve().read_text(encoding="utf-8"),
+        )
+        verifier_src = FW_DIR / "verify_modified22_kit.py"
+        if verifier_src.is_file():
+            _write_lf_text(staging_dir / "verify.py", verifier_src.read_text(encoding="utf-8"))
+        for legal_name in ("LICENSE", "THIRD_PARTY_NOTICES.md"):
+            legal_src = PROJECT_ROOT / legal_name
+            if legal_src.is_file():
+                _write_lf_text(staging_dir / legal_name, legal_src.read_text(encoding="utf-8"))
+
+        _write_lf_text(staging_dir / "FLASH_INSTRUCTIONS.txt", FLASH_GUIDE)
+        _write_lf_text(
+            staging_dir / "SHA256SUMS.txt",
             f"{MODIFIED22_SHA256}  01_MODIFIED22/EG162080.BIN\n"
             f"{STOCK_EG_SHA256}  02_STOCK_C380_ROLLBACK/EG162080.BIN\n",
-            encoding="utf-8",
         )
-        (staging_dir / "build_receipt.json").write_text(
-            json.dumps(receipt, indent=2, ensure_ascii=False), encoding="utf-8"
+        _write_lf_text(
+            staging_dir / "build_receipt.json",
+            json.dumps(receipt, indent=2, ensure_ascii=False) + "\n",
         )
 
         if out_dir.exists():
@@ -362,6 +422,31 @@ def main() -> None:
             shutil.rmtree(staging_dir, ignore_errors=True)
         raise
 
+    if args.zip:
+        zip_path = out_dir.parent / f"{out_dir.name}.zip"
+        tmp_zip = out_dir.parent / f".{out_dir.name}.staging.zip"
+        files_to_zip = sorted(
+            (f for f in out_dir.rglob("*") if f.is_file()),
+            key=lambda p: p.relative_to(out_dir).as_posix(),
+        )
+        try:
+            with zipfile.ZipFile(tmp_zip, "w") as zf:
+                for f in files_to_zip:
+                    arcname = f"{out_dir.name}/{f.relative_to(out_dir).as_posix()}"
+                    zi = zipfile.ZipInfo(filename=arcname, date_time=(2026, 11, 17, 0, 0, 0))
+                    zi.create_system = 0
+                    zi.compress_type = zipfile.ZIP_DEFLATED
+                    zi.external_attr = 0o644 << 16
+                    zf.writestr(zi, f.read_bytes(), compress_type=zipfile.ZIP_DEFLATED, compresslevel=6)
+            if zip_path.exists():
+                zip_path.unlink()
+            tmp_zip.rename(zip_path)
+        finally:
+            if tmp_zip.exists():
+                tmp_zip.unlink()
+        receipt["zip_path"] = str(zip_path)
+        receipt["zip_size_bytes"] = zip_path.stat().st_size
+        receipt["zip_sha256"] = sha256_hex(zip_path.read_bytes())
     receipt["output_dir"] = str(out_dir)
     print(json.dumps(receipt, indent=2, ensure_ascii=False))
 

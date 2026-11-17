@@ -1,4 +1,6 @@
-# 研究资料索引
+# 研究资料索引 (Research Sources Index)
+
+> 🌐 **语言 / Language**: **简体中文** · 🏠 [返回项目主页](../README.md) | **[Main README (EN)](../README_EN.md)** | **[Docs Index (EN)](README_EN.md)**
 
 本索引整理截至 2026 年 10 月 12 日已调查的主要资料。为遵守第三方版权与许可证边界，外部网页快照、第三方仓库副本及参考二进制归档于本地未公开的 `references/` 目录（已由 `.gitignore` 排除，不随公开仓库分发；许可与边界声明见 [THIRD_PARTY_NOTICES.md](../THIRD_PARTY_NOTICES.md)）；公开读者请直接查阅下列原始在线链接与固定提交哈希。
 

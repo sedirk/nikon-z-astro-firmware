@@ -1,6 +1,8 @@
 # Nikon Z6 C3.80 文档索引 (Documentation Index)
 
-本项目文档分为 **核心技术专题**、**测试与证据固化**、**开发与构建说明** 以及 **历史版本演进记录** 四大部分。
+> 🌐 **语言 / Language**: **简体中文** | **[English](README_EN.md)** · 🏠 [返回项目主页](../README.md)
+
+本项目文档分为 **核心技术专题**、**测试与证据固化**、**固件下载与构建说明** 以及 **历史版本演进记录** 四大部分。
 
 ---
 
@@ -17,17 +19,17 @@
 
 ## 2. 证据与验证 (Evidence & Catalog)
 
-- **[evidence/baseline112.json](evidence/baseline112.json)**：冻结的 112 个原生热像素基准坐标与实机暗场响应。
+- **[MODIFIED22_REAL_NEF_AUDIT_2026-11-17.md](MODIFIED22_REAL_NEF_AUDIT_2026-11-17.md)**：`Modified22` 真机 18 张 NEF 独立像素级审计与未压缩暗场布局分析。
+- **[evidence/m22_audit_metrics.json](evidence/m22_audit_metrics.json)** 与 **[evidence/baseline112.json](evidence/baseline112.json)**：M22 量化核验数据与冻结的 112 个原生热像素基准坐标。
 - **[images/modified22_real_camera_verification.png](images/modified22_real_camera_verification.png)**：M22 实机实拍（Astro RAW vs 原厂标准）平场傅里叶谱、暗场邻域热像素及偏置读噪对比图。
 - **[SAMPLE_EVIDENCE_CATALOG.json](SAMPLE_EVIDENCE_CATALOG.json)**：全量 121 个实机样本文件的元数据与校验哈希。
 
 ---
 
-## 3. 工具与构建 (Tools & Build Guide)
+## 3. 固件下载与构建 (Release Package & Build Guide)
 
-- **[TOOLS.md](TOOLS.md)**：项目分析工具、环境依赖及构建说明。
-- 固件生成工具：运行根目录 `tools/build_modified22.py --stock <Z_6_0380.bin>` 即可基于官方固件生成单模块升级文件 `EG162080.BIN`。
-
+- **直接下载刷机包**：前往 **[GitHub Releases (`v3.80-modified22`)](https://github.com/sedirk/nikon-z-astro-firmware/releases/tag/v3.80-modified22)** 下载打包好的 [`Nikon-Z6-C380-Modified22-Astro-Firmware.zip`](https://github.com/sedirk/nikon-z-astro-firmware/releases/download/v3.80-modified22/Nikon-Z6-C380-Modified22-Astro-Firmware.zip)（内含 `01_MODIFIED22/EG162080.BIN`、`02_STOCK_C380_ROLLBACK/EG162080.BIN` 及离线校验脚本 `verify.py`）。
+- **[TOOLS.md](TOOLS.md)**：项目分析工具、环境依赖及可复现构建说明（运行 `python tools/build_modified22.py --stock <Z_6_0380.bin> --zip` 可在本地复现逐字节一致的刷机包）。
 ---
 
 ## 4. 历史版本演进记录 (Historical Archive)

@@ -1,9 +1,10 @@
 # Nikon Z6 C3.80 天文直通 RAW 与长曝光固件增强项目 (Nikon Z6 Astro Firmware)
 
+> 🌐 **语言 / Language**: **简体中文** | **[English](README_EN.md)**
+
 [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](LICENSE)
 [![Base Firmware](https://img.shields.io/badge/Nikon%20Firmware-C3.80-orange.svg)](https://downloadcenter.nikonimglib.com/en/download/fw/557.html)
-[![Release Version](https://img.shields.io/badge/Version-Modified22-brightgreen.svg)](#3-使用方法与固件构建-how-to-build--use)
-
+[![Release Version](https://img.shields.io/badge/Release-v3.80--modified22-brightgreen.svg)](https://github.com/sedirk/nikon-z-astro-firmware/releases/tag/v3.80-modified22)
 本项目是针对 **尼康 Z6（固件版本 C3.80）** 的深度底层逆向工程与固件增强成果。通过对原厂数码相机图像流水线（ISP）、实时操作系统与菜单调度逻辑的精准重构，彻底解决了尼康初代微单长期困扰天文摄影与深空延时用户的三大核心痛点：**RAW 底层非线性暗角/增益梳状纹（同心彩圈）、暗电流与热噪点被激进邻域钳位（吃星/扣暗场失败）、以及扩展慢门（30秒以上）与间隔拍摄计时的严重限制**。
 
 ---
@@ -32,29 +33,36 @@
 
 ---
 
-## 3. 使用方法与固件构建 (How to Build & Use)
+## 3. 固件下载、刷入与本地构建 (Download, Flash & Build)
 
-出于尼康官方版权合规考虑，本项目**不分发、不托管包含尼康原厂专有代码的二进制固件**。用户只需合法取得官方 C3.80 固件文件（`Z_6_0380.bin`），即可通过本项目纯标准库构建脚本在本地 1 秒内安全生成经完整校验的补丁固件。
+本项目同时提供**打包好的可直接刷机固件套件（GitHub Releases）**与**零依赖本地可复现构建脚本**（Git 源码树仅保留纯净源码、补丁配方与审计数据，不入库大体积二进制）。
 
-### 3.1 本地一步构建
-1. 从[尼康官网下载中心](https://downloadcenter.nikonimglib.com/en/download/fw/557.html)下载官方 Z6 C3.80 固件并解压出 `Z_6_0380.bin`；
-2. 运行本项目内置的独立构建工具（仅需 Python 3.10+ 标准库，无需安装复杂外部依赖）：
+### 3.1 方式一（推荐）：直接下载 Release 预打包刷机包
+1. 前往 **[GitHub Releases (`v3.80-modified22`)](https://github.com/sedirk/nikon-z-astro-firmware/releases/tag/v3.80-modified22)** 下载预打包好的刷机压缩包：
+   - 📦 **[`Nikon-Z6-C380-Modified22-Astro-Firmware.zip`](https://github.com/sedirk/nikon-z-astro-firmware/releases/download/v3.80-modified22/Nikon-Z6-C380-Modified22-Astro-Firmware.zip)**（`29,318,898` 字节，SHA-256: `066ae056b5a84207ca7d99f31fedfc17f09c70283fbb466688137e5eed342e24`）
+   - 🔑 **[`SHA256SUMS.txt`](https://github.com/sedirk/nikon-z-astro-firmware/releases/download/v3.80-modified22/SHA256SUMS.txt)**（独立校验哈希清单）
+2. 解压后目录包含两个可直接放入存储卡刷机的单模块固件及离线自检脚本：
+   - `01_MODIFIED22/EG162080.BIN`：`Modified22` 天文增强固件主模块（`33,502,842` B，SHA-256: `c6a23ea40f03d83c6c721e96e8b5af8a8422a7b4ed81d39222392b7635681771`，CRC-16/XMODEM: `0x48f3`）；
+   - `02_STOCK_C380_ROLLBACK/EG162080.BIN`：官方原版 C3.80 回退模块（`33,502,842` B，SHA-256: `1e6348d58750e67372d0a8e363932c57ee9c04d0eb8f62803bcd19812df0d25c`）；
+   - `verify.py` 与 `FLASH_INSTRUCTIONS.txt`：刷机前可在解压目录内运行 `python verify.py` 离线校验 SHA-256、CRC-16 与全部 104 处补丁不变量。
+
+### 3.2 方式二：基于官方固件本地可复现构建（可选）
+1. 从[尼康官网下载中心](https://downloadcenter.nikonimglib.com/en/download/fw/557.html)下载官方 Z6 C3.80 固件并解压出 `Z_6_0380.bin`（SHA-256: `ff978ffdf77c58c0b861a06e16d432d5886969f3cdd05d62f6c8e82e8a4cea54`）；
+2. 运行本项目内置的独立构建工具（仅需 Python 3.10+ 标准库，1 秒内即可复现与 Release 逐字节一致的目录及 `.zip` 包）：
    ```bash
-   python tools/build_modified22.py --stock /path/to/Z_6_0380.bin
+   python tools/build_modified22.py --stock /path/to/Z_6_0380.bin --output-dir outputs/Nikon-Z6-C380-Modified22-Astro-Firmware --zip
    ```
-3. 构建工具将在本地输出目录生成：
-   - `01_MODIFIED22/EG162080.BIN`：测试版 Modified22 固件主模块（SHA-256: `c6a23ea40f03d83c6c721e96e8b5af8a8422a7b4ed81d39222392b7635681771`，CRC: `0x48f3`）；
-   - `02_STOCK_C380_ROLLBACK/EG162080.BIN`：官方原版 C3.80 回退模块（用于随时刷回原厂）。
 
-### 3.2 固件刷入步骤
+### 3.3 固件刷入与回退步骤
 1. 准备一张在相机内格式化过的 XQD / CFexpress 存储卡；
-2. 将生成的 `01_MODIFIED22/EG162080.BIN` 复制到**存储卡根目录**（卡根目录下只保留这一个 `.BIN` 文件）；
+2. 将解压或构建得到的 `01_MODIFIED22/EG162080.BIN` 复制到**存储卡根目录**（卡根目录下只保留这一个 `.BIN` 文件）；
 3. 装入满电原厂电池，开机进入「**设定菜单 -> 固件版本**」，选择「**版本升级**」，按屏幕提示执行升级；
 4. 升级过程中切勿关闭电源、拔出电池或存储卡。升级完成后按屏幕提示关机重启。
 
 > [!TIP]
 > 无论何时，只要机身能正常开机进入菜单，即可随时将 `02_STOCK_C380_ROLLBACK/EG162080.BIN` 放入存储卡根目录无损刷回官方原厂固件。
-### 3.3 模拟器中的操作与界面展示 (历史原型示意)
+
+### 3.4 模拟器中的操作与界面展示 (历史原型示意)
 在早期固件版本基于 QEMU 构建的机身运行仿真环境中，增强功能已通过界面交互与渲染管线测试（注：下图为历史模拟器原型界面示意，仅作功能交互演示参考）：
 
 | 取景与状态屏 (LiveView & Info) | 菜单与回放交互 (Menu System) |
@@ -84,9 +92,10 @@
    *解密快门查找表扩充、快门释放完成中断捕获以及动态计算并显示结束时间的汇编代码注入。*
 5. [【实机审计】Modified22 真机 18 张 NEF 逐像素核验与边界报告](docs/MODIFIED22_REAL_NEF_AUDIT_2026-11-17.md)  
    *记录 Modified22 实拍平场/暗场/偏置帧量化指标、sRGB 锁定闭环及长曝光无损压缩使用规范。*
-6. [【工程证据】历史实拍样本证据与量化核查总索引](docs/SAMPLE_EVIDENCE_CATALOG.json)  
+6. [【构建指南】工具链说明与可复现打包文档](docs/TOOLS.md) / [文档总索引](docs/README.md)  
+   *涵盖独立构建器 `build_modified22.py`、容器动态掩码恢复及自动化仓库卫生门禁说明。*
+7. [【工程证据】历史实拍样本证据与量化核查总索引](docs/SAMPLE_EVIDENCE_CATALOG.json)  
    *汇总全库 121 张真机实拍 NEF 样本（涵盖 Flat、Dark、Bias 样片及频谱特征）的机器可读证据索引。*
-
 ---
 
 ## 5. 致谢与开源参考 (Acknowledgements & Credits)

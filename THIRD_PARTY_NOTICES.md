@@ -1,5 +1,7 @@
 # Third-Party Notices & Licensing
 
+> 🌐 **Language / 语言**: **[简体中文 (README)](README.md)** | **[English (README_EN)](README_EN.md)**
+
 Original software, patch recipes, build/verification scripts, and technical documentation in this repository are licensed under the **GNU General Public License v3.0 or later (`SPDX-License-Identifier: GPL-3.0-or-later`)**.
 
 Third-party reference projects, mathematical format specifications, and proprietary camera firmware remain under the copyrights and licenses of their respective owners and are **not** relicensed by the root [LICENSE](LICENSE) file.
@@ -80,5 +82,5 @@ The following external projects and literature informed historical reverse-engin
 ## 4. Trademark & Proprietary Firmware Disclaimer
 
 - **Trademarks**: "Nikon", "NIKKOR", "Z6", and "EXPEED" are registered trademarks of Nikon Corporation. This project is an independent open-source research initiative and is **neither affiliated with, sponsored by, nor endorsed by Nikon Corporation**.
-- **No Distribution of Proprietary Firmware**: Official firmware binaries (`Z_6_0380.bin`, `eg1620_038000.bi`, `EG162080.BIN`), ROM images, and camera-extracted calibration dumps (`CAL38`, `ID35`) are proprietary to Nikon Corporation and are **strictly NOT distributed** in this repository or GitHub Releases.
-- **Clean-Room Local Build Model**: Users must obtain the official `Z_6_0380.bin` binary directly from [Nikon Download Center](https://downloadcenter.nikonimglib.com/en/download/fw/557.html) under Nikon's terms and run `tools/build_modified22.py` locally on their own machine.
+- **Source Tree Hygiene & Firmware Releases**: Proprietary firmware binaries (`Z_6_0380.bin`, `eg1620_038000.bi`, `EG162080.BIN`), ROM images, and camera-extracted calibration dumps (`CAL38`, `ID35`) are excluded from the Git source tree via `.gitignore` and `tools/verify_repo_hygiene.py`. Pre-built `Modified22` flash kits attached to GitHub Releases are derived from official Nikon Z6 firmware C3.80 (`Z_6_0380.bin`); Nikon's underlying base firmware remains proprietary to Nikon Corporation, while this project's original patch recipes, clean-room builders, and verification tools are licensed under `GPL-3.0-or-later`.
+- **Reproducible Local Build**: Users may either download the pre-packaged flash kit from [GitHub Releases](https://github.com/sedirk/nikon-z-astro-firmware/releases) or obtain official `Z_6_0380.bin` directly from [Nikon Download Center](https://downloadcenter.nikonimglib.com/en/download/fw/557.html) and reproduce the identical `EG162080.BIN` locally via `tools/build_modified22.py`.

@@ -1,5 +1,7 @@
 # 专题报告 04：M 档 600s 扩展慢门与曝光后纯等待间隔定时器
 
+> 🌐 **语言 / Language**: **简体中文** | **[English](04_EXTENDED_SHUTTER_AND_INTERVAL_TIMER_EN.md)** · 🏠 [返回文档索引](README.md)
+
 ## 1. M 档常驻 30"~600" 扩展慢门 (Extended Shutter Speeds v2)
 
 ### 1.1 原厂限制与痛点

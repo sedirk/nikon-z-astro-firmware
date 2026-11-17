@@ -1,5 +1,7 @@
 # 专题报告 03：菜单无感切换设计与色空间属性架构深度复盘
 
+> 🌐 **语言 / Language**: **简体中文** | **[English](03_UI_SWITCH_AND_COLOR_SPACE_ARCHITECTURE_EN.md)** · 🏠 [返回文档索引](README.md)
+
 ## 1. 为什么此前「移到色空间」一直未成功？(The PID 0x0508 Misconception)
 
 在 `Modified16` 之前，天文直通开关曾尝试做在「NEF(RAW)记录 -> NEF(RAW)压缩」菜单中（复用有损压缩选项）。但这带来了一个严重痛点：**开启直通后无法自由选择无损压缩或未压缩 RAW**。
