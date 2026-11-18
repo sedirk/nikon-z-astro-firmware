@@ -16,8 +16,8 @@ Definitions fixed by this module (and restated inside every JSON artifact it fee
   SENSOR_WH      = (6064, 4040)  full stored CFA grid, as declared by SubIFD2
                                  ImageWidth/ImageLength and by LibRaw (no crop, no margins)
   SENSOR_AREA    = (8, 8, 6048, 4024)  MakerNote 0x0045 "SensorArea" (x, y, w, h);
-                                 identical in all 121 files.  "Valid area" = rows 8..4031,
-                                 cols 8..6055 of the stored grid.
+                                 identical across all NEF files in the sample tree.  "Valid area" =
+                                 rows 8..4031, cols 8..6055 of the stored grid.
   CFA_PATTERN    = [[0,1],[3,2]]  (R at even/even, G1 at even/odd, G2 at odd/even, B at odd/odd);
                                  LibRaw raw_pattern identical, MakerNote/preview agree.
   CENTER_ROI     = middle half of each channel plane: rows h//4..3h//4, cols w//4..3w//4 of a

@@ -10,7 +10,7 @@ Third-party reference projects, mathematical format specifications, and propriet
 
 ## 1. Project Copyright & License Scope
 
-**Nikon Z6 Astro Firmware Enhancement (`Modified22`)**  
+**Nikon Z6 C3.80 Astro Firmware (`Modified23`)**  
 Copyright (C) 2026 SEDIRK and contributors.  
 SPDX-License-Identifier: `GPL-3.0-or-later`
 
@@ -19,7 +19,7 @@ This program is free software: you can redistribute it and/or modify it under th
 This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the verbatim [LICENSE](LICENSE) file for the full text of the GNU General Public License v3.0.
 
 **Covered Original Material**:
-- Standalone clean-room build & verification tools (`tools/build_modified22.py`, `tools/verify_repo_hygiene.py`, `tools/fw/*`, `tools/evidence/*`);
+- Standalone clean-room build & verification tools (`tools/build_modified23.py`, `tools/verify_repo_hygiene.py`, `tools/fw/*`, `tools/evidence/*`);
 - Patch recipes (`patches/*.json`), quantitative audit datasets (`docs/evidence/*.json`, `docs/SAMPLE_EVIDENCE_CATALOG.json`), and project documentation (`README.md`, `docs/**`).
 
 ---
@@ -67,11 +67,11 @@ The following external projects and literature informed historical reverse-engin
 - **Upstream Licenses**:
   - Camera QEMU emulation repositories (`z6-qemu`, `z7-qemu`, `z9-qemu`): **GNU General Public License v2.0 (`GPL-2.0-only` / `GPL-2.0-or-later`)** and **LGPL-2.1-or-later**, Copyright (C) Fabrice Bellard, the QEMU Project contributors, and respective camera simulator contributors.
   - Wonder-Lantern custom shutter-sound repository: **Wonder-Lantern Community License (WLCL)**, Copyright (C) 2026 Wonder Lantern contributors (non-commercial restriction).
-- **Boundary Statement**: No Wonder-Lantern WLCL code, audio assets, or QEMU source archives are linked into or distributed with this project. All `Modified22` ARM/Thumb ISP hooks, property-table gates, 600s shutter tables, and interval-timer routines were independently developed.
+- **Boundary Statement**: No Wonder-Lantern WLCL code, audio assets, or QEMU source archives are linked into or distributed with this project. All ARM/Thumb ISP hooks, property-table gates, hardware bit-packer routines, 600s shutter tables, and interval-timer routines were independently developed.
 
 ### 3.2 Nikon Hacker Community (`nikon-firmware-tools` / `Nikon-Patch`)
 - **References**: https://simeonpilgrim.com/nikon-patch/nikon-patch.html / https://github.com/simeonpilgrim/nikon-firmware-tools
-- **Boundary Statement**: Historical DSLR dark-current research and container documentation served as background literature. `tools/build_modified22.py` and `tools/analyze_z6.py` use the clean-room `z6_c380_container.py` mask-recovery module and do **not** read, import, or redistribute `FirmwareUtils.java` or `FirmwareDecoder.java`.
+- **Boundary Statement**: Historical DSLR dark-current research and container documentation served as background literature. `tools/build_modified23.py`, `tools/analyze_z6.py`, and all `tools/fw/*` utilities use the clean-room `z6_c380_container.py` mask-recovery module and do **not** read, import, or redistribute `FirmwareUtils.java` or `FirmwareDecoder.java`.
 
 ### 3.3 Mark Shelley Astrophotography Research
 - **References**: https://www.markshelley.co.uk/Astronomy/concentric_ring_diagnosis.html and related articles listed in [docs/SOURCES.md](docs/SOURCES.md).
@@ -82,5 +82,5 @@ The following external projects and literature informed historical reverse-engin
 ## 4. Trademark & Proprietary Firmware Disclaimer
 
 - **Trademarks**: "Nikon", "NIKKOR", "Z6", and "EXPEED" are registered trademarks of Nikon Corporation. This project is an independent open-source research initiative and is **neither affiliated with, sponsored by, nor endorsed by Nikon Corporation**.
-- **Source Tree Hygiene & Firmware Releases**: Proprietary firmware binaries (`Z_6_0380.bin`, `eg1620_038000.bi`, `EG162080.BIN`), ROM images, and camera-extracted calibration dumps (`CAL38`, `ID35`) are excluded from the Git source tree via `.gitignore` and `tools/verify_repo_hygiene.py`. Pre-built `Modified22` flash kits attached to GitHub Releases are derived from official Nikon Z6 firmware C3.80 (`Z_6_0380.bin`); Nikon's underlying base firmware remains proprietary to Nikon Corporation, while this project's original patch recipes, clean-room builders, and verification tools are licensed under `GPL-3.0-or-later`.
-- **Reproducible Local Build**: Users may either download the pre-packaged flash kit from [GitHub Releases](https://github.com/sedirk/nikon-z-astro-firmware/releases) or obtain official `Z_6_0380.bin` directly from [Nikon Download Center](https://downloadcenter.nikonimglib.com/en/download/fw/557.html) and reproduce the identical `EG162080.BIN` locally via `tools/build_modified22.py`.
+- **Source Tree Hygiene & Firmware Releases**: Proprietary firmware binaries (`Z_6_0380.bin`, `eg1620_038000.bi`, `EG162080.BIN`), ROM images, and camera-extracted calibration dumps (`CAL38`, `ID35`) are excluded from the Git source tree via `.gitignore` and `tools/verify_repo_hygiene.py`. Pre-built `Modified23` flash kits attached to GitHub Releases are derived from official Nikon Z6 firmware C3.80 (`Z_6_0380.bin`); Nikon's underlying base firmware remains proprietary to Nikon Corporation, while this project's original patch recipes, clean-room builders, and verification tools are licensed under `GPL-3.0-or-later`.
+- **Reproducible Local Build**: Users may either download the pre-packaged flash kit from [GitHub Releases](https://github.com/sedirk/nikon-z-astro-firmware/releases) or obtain official `Z_6_0380.bin` directly from [Nikon Download Center](https://downloadcenter.nikonimglib.com/en/download/fw/557.html) and reproduce the identical `EG162080.BIN` locally via `tools/build_modified23.py`.

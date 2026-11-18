@@ -1,10 +1,11 @@
 """Nikon Z6 C3.80 UI-Switchable Astro RAW & Color Space Architecture (Modified19 .. Modified22).
 
 Module Overview & Historical Builders:
-  - Current Production Entry Point (`build_all_m22_astro_ui_spans`, Modified22):
-      1. Gates all 13 Modified13 Astro RAW hooks (`fn_is_astro_r0` @ `0x1002D900`) on genuine
-         Photo Shooting Menu -> Color space `PID 0x0526` (`uint32([0xC24CDEA0]) == 1`) AND
-         effective RAW recording `PID 0x131B` (`uint32([0xC24CC798]) <= 1` for RAW+JPEG / RAW).
+  - Current Production Entry Point (`build_all_m23_astro_ui_spans`, Modified23; `build_all_m22_astro_ui_spans` retained bit-for-bit):
+      1. Gates all 14 Astro RAW hooks (`fn_is_astro_r0` @ `0x1002D900`: 13 Modified13 ISP bypass hooks +
+         `0x100A34D0` uncompressed format-3 hardware bit-packer fix) on genuine Photo Shooting Menu ->
+         Color space `PID 0x0526` (`uint32([0xC24CDEA0]) == 1`) AND effective RAW recording `PID 0x131B`
+         (`uint32([0xC24CC798]) <= 1` for RAW+JPEG / RAW).
       2. Locks Effective Color Space `PID 0x130A` (`0xC24CC74C`) to `0` (`sRGB`) by patching
          `0x1014BB28` (`bne` -> `nop`) inside `0x1014BAEA`, ensuring `Z61_` / `DSC_` filenames,
          MakerNote `0x001E = 1` (sRGB), and sRGB embedded/companion JPEGs in both modes.
@@ -19,6 +20,10 @@ Module Overview & Historical Builders:
       `M21` read `0xC24CDE28` / `PID 0x0508`). Do not use M19..M21 builders for new builds.
 """
 from __future__ import annotations
+
+if not __debug__:
+    raise RuntimeError("z6_astro_ui_color_space_v2.py must not be executed with Python -O/-OO.")
+
 import struct
 from typing import Callable
 
@@ -41,7 +46,7 @@ from z6_thumb_emit import (
 
 # XIP Hole 1 layout:
 #   0x1002D884..0x1002D8C7 (68B): Modified9/13 frontend unity sanitizer (astro target for 0x1017d834)
-#   0x1002D900..0x1002EEFF      : Modified19 Astro UI toggle cave (< ADDR_PTP_HDR 0x1002EF14)
+#   0x1002D900..0x1002DFFF      : Astro UI toggle cave (M20..M23 bounded < ADDR_M20_IV_CAVE 0x1002E000)
 ADDR_M9_SANITIZER = 0x1002D884
 M9_SANITIZER_HEX = (
     "0f4900223c2341f82320013bfbd144f200028a620a65c1f8a020c1f8c820"
@@ -50,7 +55,7 @@ M9_SANITIZER_HEX = (
 )
 ADDR_M19_CAVE = 0x1002D900
 ADDR_M20_IV_CAVE = 0x1002E000     # Start of m20 Interval Timer End-Time cave
-ADDR_M19_CAVE_LIMIT = 0x1002EF14  # Start of m600_v2 ADDR_PTP_HDR
+ADDR_M19_CAVE_LIMIT = 0x1002EF14  # Legacy M19-only ceiling; M20..M23 pass cave_limit=ADDR_M20_IV_CAVE (0x1002E000)
 
 # Native scalar RAM slots:
 # NOTE: 0xC24CDDC4 (PID 0x0440 Focus Shift shots) and 0xC24CDE28 / 0xC24CC948 (PID 0x0508 / 0x1381 Auto ISO)
@@ -198,6 +203,7 @@ def build_astro_ui_v2_cave(
     cave_limit: int = ADDR_M19_CAVE_LIMIT,
     ram_prop_0508: int = RAM_PROP_0508,
     use_u32_0508: bool = False,
+    include_uncomp_raw_pack_fix: bool = False,
 ) -> tuple[bytes, dict[str, int]]:
     """Assemble the complete astro_ui_cave blob at 0x1002D900 and return (blob, symbols)."""
 
@@ -345,7 +351,40 @@ def build_astro_ui_v2_cave(
             lambda e: (_raw(e, "006900204877"), e.jump_abs(0x1019787A)),
         )
 
-        # 14. Table-driven UI String override trampoline for 0x104C0134:
+        if include_uncomp_raw_pack_fix:
+            # 14. Site 0x100a34d0 (m23_astro_gate_uncomp_raw_pack):
+            #     Uncompressed RAW encoder 0x100A3480 enters 0x100A34D0 when input descriptor format == 3
+            #     (16-bit LE unpacked, selected on >= 1s / wide=1 or slow_1af0!=0 captures).
+            #     Stock sets [r4+2]=0, [r4+3]=0 (r2=0), writing 48,997,120 B 16-bit LE that overflows
+            #     the 42,920,960 B packed-14 RAW slot and collides with embedded preview JPEGs.
+            #     In Astro mode, keep input [r4+2]=0 (16-bit LE) and set output [r4+3] to 1 (14-bit packed)
+            #     or 2 (12-bit packed, when [r5+1]==2) with lut_ptr=0, preserving r0..r12, sp, lr, and APSR.
+            _align4(em)
+            syms["tramp_a34d0"] = em.pc
+            em.label("tramp_a34d0")
+            em.push(R0, R1, R2, LR)
+            em.save_flags(R2)
+            em.call_abs(fn_pred)
+            em.cmp_u8(R0, 1)
+            em.j_cond(COND_EQ, "tramp_a34d0_astro")
+            em.restore_flags(R2)
+            em.pop(R0, R1, R2, LR)
+            _raw(em, "a270e270")  # strb r2, [r4, #2]; strb r2, [r4, #3]
+            em.jump_abs(0x100A34AA)
+            em.label("tramp_a34d0_astro")
+            em.mov_u16(R0, 0)
+            _raw(em, "a070")      # strb r0, [r4, #2]  (0 = 16-bit LE input)
+            _raw(em, "6978")      # ldrb r1, [r5, #1]  (target NEF format: 4=14-bit, 2=12-bit)
+            em.cmp_u8(R1, 2)
+            em.j_cond(COND_EQ, "tramp_a34d0_store")
+            em.mov_u16(R1, 1)     # movs r1, #1        (1 = 14-bit packed output)
+            em.label("tramp_a34d0_store")
+            _raw(em, "e170")      # strb r1, [r4, #3]
+            em.restore_flags(R2)
+            em.pop(R0, R1, R2, LR)
+            em.jump_abs(0x100A34AA)
+
+        # 15. Table-driven UI String override trampoline for 0x104C0134:
         #     Hooked at 0x104C0134 inside GetLanguageString (0x104C0104):
         #       r4 = language index (8=ZH_CN, 9=ZH_TW, others=EN/default)
         #       r6 = out_ptr, r5 = out_len, [sp, #4] = String ID
@@ -454,13 +493,15 @@ def build_all_m19_astro_ui_spans(
     lock_1381_srgb: bool = False,
     include_legacy_0508_lock: bool = True,
     lock_130a_srgb: bool = False,
+    include_uncomp_raw_pack_fix: bool = False,
 ) -> tuple[list[tuple[int, str, bytes, str]], dict[str, int]]:
-    """Build all Astro UI v2/v3/v4 (full Color space title + sRGB/Astro labels + sRGB lock) spans."""
+    """Build all Astro UI v2/v3/v4/v5 (full Color space title + sRGB/Astro labels + sRGB lock) spans."""
     cave_blob, syms = build_astro_ui_v2_cave(
         overrides=overrides,
         cave_limit=cave_limit,
         ram_prop_0508=ram_prop_0508,
         use_u32_0508=use_u32_0508,
+        include_uncomp_raw_pack_fix=include_uncomp_raw_pack_fix,
     )
     m9_bytes = bytes.fromhex(M9_SANITIZER_HEX)
     assert len(m9_bytes) == 68
@@ -483,7 +524,7 @@ def build_all_m19_astro_ui_spans(
             "m19_astro_ui_cave",
             "00" * len(cave_blob),
             cave_blob,
-            f"Modified19 dynamic Astro gate ([0x{ram_prop_0508:08X}]==1 && [0xC24CC798]<=1), 13 dual-path RAW trampolines, and 5x36-lang Color Space UI string overrides ({len(cave_blob)}B)",
+            f"Modified19 dynamic Astro gate ([0x{ram_prop_0508:08X}]==1 && [0xC24CC798]<=1), {14 if include_uncomp_raw_pack_fix else 13} dual-path RAW trampolines, and 5x36-lang Color Space UI string overrides ({len(cave_blob)}B)",
         ),
         (
             0x100AE3A4,
@@ -614,6 +655,16 @@ def build_all_m19_astro_ui_spans(
                 "NOP bne #0x1014bb2e in 0x1014BAEA so Effective Color Space PID 0x130A ([0xC24CC74C]) is locked to 0 (sRGB: Z61_/DSC_ DCF prefix, MakerNote ColorSpace=1, sRGB JPEG/LiveView) while Color space menu PID 0x0526 ([0xC24CDEA0]) stays 0/1",
             )
         )
+    if include_uncomp_raw_pack_fix:
+        expected_anchors.append(
+            (
+                0x100A34D0,
+                "m19_astro_gate_uncomp_raw_pack",
+                "a270e270",
+                _b_nop(0x100A34D0, syms["tramp_a34d0"], 4, link=False),
+                "Gate 0x100a34d0 in 0x100A3480: hardware-pack format-3 (16-bit LE) input to target 14-bit/12-bit packed NEF output ([r4+2]=0, [r4+3]=1/2, lut=0) in Astro mode vs Stock [r4+2]=0, [r4+3]=0",
+            )
+        )
 
     spans: list[tuple[int, str, bytes, str]] = []
     for addr, grp, expected_hex, new_bytes, desc in expected_anchors:
@@ -625,6 +676,8 @@ def build_all_m19_astro_ui_spans(
             desc = desc.replace("Modified19", "Modified21")
         elif tag_prefix == "m22":
             desc = desc.replace("Modified19", "Modified22")
+        elif tag_prefix == "m23":
+            desc = desc.replace("Modified19", "Modified23")
         off = addr - BASE
         expected_bytes = bytes.fromhex(expected_hex)
         actual_bytes = stock[off : off + len(expected_bytes)]
@@ -678,4 +731,22 @@ def build_all_m22_astro_ui_spans(
         lock_1381_srgb=False,
         include_legacy_0508_lock=False,
         lock_130a_srgb=True,
+    )
+
+
+def build_all_m23_astro_ui_spans(
+    stock: bytes,
+) -> tuple[list[tuple[int, str, bytes, str]], dict[str, int]]:
+    """Build Modified23 Astro RAW UI spans (M22 PID 0x0526 gate + PID 0x130A sRGB lock + 0x100A34D0 long-exposure uncompressed format-3 hardware bit-packer fix)."""
+    return build_all_m19_astro_ui_spans(
+        stock,
+        overrides=UI_OVERRIDES_M21,
+        cave_limit=ADDR_M20_IV_CAVE,
+        tag_prefix="m23",
+        ram_prop_0508=RAM_PROP_0526,
+        use_u32_0508=True,
+        lock_1381_srgb=False,
+        include_legacy_0508_lock=False,
+        lock_130a_srgb=True,
+        include_uncomp_raw_pack_fix=True,
     )

@@ -2,7 +2,7 @@
 
 > 🌐 **语言 / Language**: **简体中文** · 🏠 [返回项目主页](../README.md) | **[Main README (EN)](../README_EN.md)** | **[Docs Index (EN)](README_EN.md)**
 
-本索引整理截至 2026 年 10 月 12 日已调查的主要资料。为遵守第三方版权与许可证边界，外部网页快照、第三方仓库副本及参考二进制归档于本地未公开的 `references/` 目录（已由 `.gitignore` 排除，不随公开仓库分发；许可与边界声明见 [THIRD_PARTY_NOTICES.md](../THIRD_PARTY_NOTICES.md)）；公开读者请直接查阅下列原始在线链接与固定提交哈希。
+本索引汇总本项目逆向分析、算法对照与离线验证所引用的外部文献及开源工具来源（更新至 2026 年 11 月）。为遵守第三方版权与许可证边界，外部网页快照、第三方仓库副本及参考二进制归档于本地未公开的 `references/` 目录（已由 `.gitignore` 排除，不随公开仓库分发；许可与边界声明见 [THIRD_PARTY_NOTICES.md](../THIRD_PARTY_NOTICES.md)）；公开读者请直接查阅下列原始在线链接与固定提交哈希。
 
 外部软件的许可证以各仓库或原作者文件为准。参考音效二进制不是本项目产出的天文固件。
 
@@ -30,6 +30,12 @@
 - [Z30 Firmware Extensions](https://github.com/RealCaCl2/z30-firmware-extensions)；本地归档 `references/z30-firmware-extensions`（未随公开仓库分发）。仅Z30 C1.20；含解包、补丁与离线验证源码。 仓库固定提交 `59ec38699ba248419508be85ae60e2a61b0b26fc`。
 - [Wonder-Lantern 二进制](https://github.com/vic2349/Wonder-Lantern)；本地归档 `references/wonder-lantern`（未随公开仓库分发）。只保存此前下载的英文EG和SHCORE及本地比较工具，非完整仓库。
 
+
+## 逆向指令仿真与 RAW 像素审计工具链
+
+- [Unicorn Engine (`unicorn 2.1.4`)](https://github.com/unicorn-engine/unicorn)：用于离线原生执行 ARM/Thumb 固件函数、437 组 RAW 管线分类矩阵与刷写调度器探针（GPLv2，仅作为本地测试环境 Python 依赖，不随仓库分发）。
+- [Capstone Disassembly Framework (`capstone 5.0.7`)](https://github.com/capstone-engine/capstone)：用于指令边界静态核验与 `--rebuild-from-source` 汇编比对（BSD License，仅作为可选本地验证依赖）。
+- [LibRaw (`0.22.2`)](https://github.com/LibRaw/LibRaw) & [rawpy (`0.28.0`)](https://github.com/letmaik/rawpy)：用于实机 130 张 NEF 样片的独立全画幅解码交叉核验与频谱/读噪证据生成。
 ## 许可
 
 - [Wonder-Lantern许可](https://raw.githubusercontent.com/vic2349/Wonder-Lantern/b1f1293da6774c3a779832f72182f8b6aa148ad7/LICENSE)；本地快照 `references/web/wonder_license.txt`（未随公开仓库分发）。参考二进制相关许可原文。

@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Automated repository hygiene, licensing, privacy, and documentation gate.
 
-Verifies that the public Nikon Z6 C3.80 Astro Firmware (`Modified22`) repository tree:
+Verifies that the public Nikon Z6 C3.80 Astro Firmware (`Modified23`) repository tree:
   1. Contains zero `.gitignore`-violating tracked files, proprietary firmware binaries,
      camera dumps, raw NEF files, or non-redistributable `references/` snapshots;
   2. Respects clean-room mask recovery boundaries (`z6_c380_container.py` without
@@ -11,7 +11,7 @@ Verifies that the public Nikon Z6 C3.80 Astro Firmware (`Modified22`) repository
   4. Has 100% valid UTF-8 text files, valid JSON recipes/catalogs, zero broken or
      ignored-target Markdown links, and zero double-escaped LaTeX sequences;
   5. Cross-verifies quantitative claims in Markdown audit/technical reports against
-     committed JSON evidence (`SAMPLE_EVIDENCE_CATALOG.json`, `m22_audit_metrics.json`);
+     committed JSON evidence (`SAMPLE_EVIDENCE_CATALOG.json`, `m22_audit_metrics.json`, `m23_audit_metrics.json`);
   6. (With `--check-history`) Enumerates every reachable commit tree's full path set
      (independent of blob deduplication) plus all historical blobs and commit emails.
 
@@ -19,13 +19,16 @@ SPDX-License-Identifier: GPL-3.0-or-later
 """
 from __future__ import annotations
 
+if not __debug__:
+    raise RuntimeError("verify_repo_hygiene.py must not be executed with Python -O/-OO.")
+
 import argparse
+import ast
 import json
 from pathlib import Path
 import re
 import subprocess
 import sys
-
 REPO_ROOT = Path(__file__).resolve().parents[1]
 
 MAX_PUBLIC_FILE_BYTES = 5 * 1024 * 1024  # 5 MiB ceiling per public file
@@ -91,12 +94,23 @@ REQUIRED_ROOT_FILES = (
     "README_EN.md",
     ".gitignore",
     "tools/build_modified22.py",
+    "tools/build_modified23.py",
     "tools/verify_repo_hygiene.py",
     "tools/fw/z6_c380_container.py",
     "tools/fw/z6_c380_zero_samples.json",
+    "tools/fw/prepare_modified23_lab.py",
+    "tools/fw/package_modified23_kit.py",
+    "tools/fw/verify_modified23_kit.py",
+    "tools/fw/probe_modified23_native.py",
+    "tools/fw/probe_modified23_updater.py",
+    "tools/evidence/nef_evidence_lib.py",
+    "tools/evidence/build_m23_audit_metrics.py",
     "patches/z6-c380-modified22-color-space-pid0526-srgb-600s.json",
+    "patches/z6-c380-modified23-uncompressed-astro-raw-srgb-600s.json",
     "docs/README.md",
     "docs/README_EN.md",
+    "docs/CHANGELOG.md",
+    "docs/CHANGELOG_EN.md",
     "docs/TOOLS.md",
     "docs/TOOLS_EN.md",
     "docs/01_ASTRO_RAW_AND_CONCENTRIC_RINGS.md",
@@ -111,6 +125,11 @@ REQUIRED_ROOT_FILES = (
     "docs/evidence/m22_audit_metrics.json",
     "docs/MODIFIED22_REAL_NEF_AUDIT_2026-11-17.md",
     "docs/MODIFIED22_REAL_NEF_AUDIT_2026-11-17_EN.md",
+    "docs/evidence/probe_modified23_native_result.json",
+    "docs/evidence/modified23_updater_audit.json",
+    "docs/evidence/m23_audit_metrics.json",
+    "docs/MODIFIED23_UNCOMPRESSED_ASTRO_RAW_FIX_2026-11-18.md",
+    "docs/MODIFIED23_UNCOMPRESSED_ASTRO_RAW_FIX_2026-11-18_EN.md",
 )
 
 BILINGUAL_DOC_PAIRS = (
@@ -147,10 +166,22 @@ BILINGUAL_DOC_PAIRS = (
         "MODIFIED22_REAL_NEF_AUDIT_2026-11-17_EN.md",
         "MODIFIED22_REAL_NEF_AUDIT_2026-11-17.md",
     ),
+    (
+        "docs/MODIFIED23_UNCOMPRESSED_ASTRO_RAW_FIX_2026-11-18.md",
+        "docs/MODIFIED23_UNCOMPRESSED_ASTRO_RAW_FIX_2026-11-18_EN.md",
+        "MODIFIED23_UNCOMPRESSED_ASTRO_RAW_FIX_2026-11-18_EN.md",
+        "MODIFIED23_UNCOMPRESSED_ASTRO_RAW_FIX_2026-11-18.md",
+    ),
+    (
+        "docs/CHANGELOG.md",
+        "docs/CHANGELOG_EN.md",
+        "CHANGELOG_EN.md",
+        "CHANGELOG.md",
+    ),
 )
 
-EXPECTED_RELEASE_ZIP_SIZE_TOKEN = "29,318,898"
-EXPECTED_RELEASE_ZIP_SHA256 = "066ae056b5a84207ca7d99f31fedfc17f09c70283fbb466688137e5eed342e24"
+EXPECTED_RELEASE_ZIP_SIZE_TOKEN = "29,320,565"
+EXPECTED_RELEASE_ZIP_SHA256 = "1aae77b798f2768ef873d256108758d0a097537632d8fb531c04ca26c29d818e"
 
 
 def _git_lines(*args: str, cwd: Path = REPO_ROOT) -> list[str]:
@@ -173,8 +204,18 @@ def collect_public_files(repo: Path, tracked_only: bool = False) -> tuple[list[s
 
 
 def check_clean_room_tools(repo: Path, errors: list[str]) -> None:
+    m23_hardened_scripts = (
+        "tools/build_modified23.py",
+        "tools/fw/prepare_modified23_lab.py",
+        "tools/fw/package_modified23_kit.py",
+        "tools/fw/verify_modified23_kit.py",
+        "tools/fw/probe_modified23_native.py",
+        "tools/fw/probe_modified23_updater.py",
+        "tools/evidence/build_m23_audit_metrics.py",
+    )
     clean_room_targets = [
         "tools/build_modified22.py",
+        *m23_hardened_scripts,
         "tools/fw/z6_c380_container.py",
         "tools/analyze_z6.py",
     ]
@@ -189,6 +230,17 @@ def check_clean_room_tools(repo: Path, errors: list[str]) -> None:
             if tok in text:
                 errors.append(f"Clean-room boundary violation in {rel}: contains '{tok}'")
 
+    for rel in (*m23_hardened_scripts, "tools/verify_repo_hygiene.py"):
+        p = repo / rel
+        if not p.is_file():
+            continue
+        text = p.read_text(encoding="utf-8")
+        if "if not __debug__:" not in text:
+            errors.append(f"Missing Python -O/__debug__ rejection guard in {rel}")
+        tree = ast.parse(text, filename=rel)
+        assert_nodes = [n for n in ast.walk(tree) if isinstance(n, ast.Assert)]
+        if assert_nodes:
+            errors.append(f"Optimization-strippable assert statement(s) found in {rel}: {len(assert_nodes)}")
 
 def check_markdown_file(
     rel: str, text: str, repo: Path, public_set: set[str], errors: list[str]
@@ -428,7 +480,7 @@ def check_evidence_doc_consistency(repo: Path, errors: list[str]) -> int:
 
     checks = 0
     files = cat.get("files") or []
-    if cat.get("nef_file_count") != 121 or len(files) != 121:
+    if cat.get("nef_file_count") != 130 or len(files) != 130:
         errors.append(f"Catalog NEF count mismatch: nef_file_count={cat.get('nef_file_count')}, len={len(files)}")
     checks += 1
 
@@ -551,7 +603,7 @@ def check_evidence_doc_consistency(repo: Path, errors: list[str]) -> int:
                 checks += 1
 
     astro_std_2dp = f"{noise_by_mode['Astro']['unclipped_std']:.2f}"
-    doc02_tokens = (f"0 / {astro_clean_n}", f"{astro_clean_above56} / {astro_clean_n} (100%)", astro_std_2dp)
+    doc02_tokens = ("0 / 112 (0%", "112 / 112 (100%)", astro_std_2dp, "4.24", "7.42")
     for rel_02 in ("docs/02_STAR_EATER_AND_DARK_CURRENT.md", "docs/02_STAR_EATER_AND_DARK_CURRENT_EN.md"):
         p02 = repo / rel_02
         if p02.is_file():
@@ -563,13 +615,14 @@ def check_evidence_doc_consistency(repo: Path, errors: list[str]) -> int:
 
     readme_tokens = (
         "0/112",
-        f"0/{astro_clean_n}",
         f"{round(f5119['comb_fft_bin3729_0p2276']):,}",
         f"{round(f5110['comb_fft_bin3729_0p2276']):,}",
         EXPECTED_RELEASE_ZIP_SIZE_TOKEN,
         EXPECTED_RELEASE_ZIP_SHA256,
-        "Nikon-Z6-C380-Modified22-Astro-Firmware.zip",
+        "Nikon-Z6-C380-Modified23-Astro-Firmware.zip",
         "SHA256SUMS.txt",
+        "01_MODIFIED23/EG162080.BIN",
+        "47a5caa9521c4d81e57958626baf9660fefdc489da120840b931525968a11029",
     )
     for rel_rm in ("README.md", "README_EN.md"):
         prm = repo / rel_rm
@@ -580,6 +633,53 @@ def check_evidence_doc_consistency(repo: Path, errors: list[str]) -> int:
                     errors.append(f"{rel_rm} missing verified value '{tok}'")
                 checks += 1
 
+    # Ensure explanatory docs carry zero stale candidate labels, 121-frame counts, or legacy uncompressed warnings
+    explanatory_docs = (
+        "README.md",
+        "README_EN.md",
+        "THIRD_PARTY_NOTICES.md",
+        "samples/README.md",
+        "docs/README.md",
+        "docs/README_EN.md",
+        "docs/TOOLS.md",
+        "docs/TOOLS_EN.md",
+        "docs/01_ASTRO_RAW_AND_CONCENTRIC_RINGS.md",
+        "docs/01_ASTRO_RAW_AND_CONCENTRIC_RINGS_EN.md",
+        "docs/02_STAR_EATER_AND_DARK_CURRENT.md",
+        "docs/02_STAR_EATER_AND_DARK_CURRENT_EN.md",
+        "docs/03_UI_SWITCH_AND_COLOR_SPACE_ARCHITECTURE.md",
+        "docs/03_UI_SWITCH_AND_COLOR_SPACE_ARCHITECTURE_EN.md",
+        "docs/04_EXTENDED_SHUTTER_AND_INTERVAL_TIMER.md",
+        "docs/04_EXTENDED_SHUTTER_AND_INTERVAL_TIMER_EN.md",
+        "docs/PROJECT_GOALS.md",
+        "docs/NEXT_STEPS.md",
+    )
+    forbidden_explanatory_phrases = (
+        "hardware_pixels_verified = false",
+        "刷机前验证候选",
+        "刷机前完备验证候选",
+        "Modified23-Candidate",
+        "Pre-Flash Verified Candidate",
+        "awaiting physical camera capture sign-off",
+        "Awaiting On-Camera Sign-Off",
+        "固定选择「无损压缩",
+        "固定选用「无损压缩",
+        "推荐固定使用**无损压缩",
+        "always select **Lossless compressed**",
+        "use **Lossless compressed** for",
+        "121 张",
+        "121 个实机样本",
+        "all **121**",
+        "across **121**",
+    )
+    for rel_exp in explanatory_docs:
+        p_exp = repo / rel_exp
+        if p_exp.is_file():
+            t_exp = p_exp.read_text(encoding="utf-8")
+            for bad_tok in forbidden_explanatory_phrases:
+                if bad_tok in t_exp:
+                    errors.append(f"{rel_exp} contains stale/version-stacked phrase '{bad_tok}'")
+                checks += 1
     tools_cn = repo / "docs/TOOLS.md"
     if tools_cn.is_file():
         ttl = tools_cn.read_text(encoding="utf-8")
@@ -607,6 +707,182 @@ def check_evidence_doc_consistency(repo: Path, errors: list[str]) -> int:
                 errors.append(f"{en_rel} top header missing language switch link to ({cn_link_in_en})")
             checks += 2
 
+    # Cross-check Modified23 recipe, native probe, updater audit, and bilingual reports
+    m23_recipe_p = repo / "patches/z6-c380-modified23-uncompressed-astro-raw-srgb-600s.json"
+    m23_probe_p = repo / "docs/evidence/probe_modified23_native_result.json"
+    m23_upd_p = repo / "docs/evidence/modified23_updater_audit.json"
+    m23_metrics_p = repo / "docs/evidence/m23_audit_metrics.json"
+    if m23_recipe_p.is_file() and m23_probe_p.is_file() and m23_upd_p.is_file() and m23_metrics_p.is_file():
+        m23_rec = json.loads(m23_recipe_p.read_text(encoding="utf-8"))
+        m23_prb = json.loads(m23_probe_p.read_text(encoding="utf-8"))
+        m23_upd = json.loads(m23_upd_p.read_text(encoding="utf-8"))
+        m23_met = json.loads(m23_metrics_p.read_text(encoding="utf-8"))
+        m23_sha = m23_rec.get("modified23_sha256", "")
+        m23_crc = m23_rec.get("crc16_hqx", "")
+        if m23_rec.get("total_edits") != 105 or m23_crc != "0xc083":
+            errors.append("Modified23 recipe total_edits/crc16_hqx mismatch")
+        if (
+            m23_prb.get("status") != "PASS"
+            or m23_prb.get("modified23_sha256") != m23_sha
+            or m23_prb.get("measured_candidate_sha256") != m23_sha
+            or m23_prb.get("measured_candidate_crc16_hqx") != m23_crc
+            or m23_prb.get("measured_candidate_size_bytes") != 33502842
+        ):
+            errors.append("probe_modified23_native_result.json measured identity/status mismatch")
+        checks += 2
+
+        t23 = m23_prb.get("tests", {})
+        bd = t23.get("raw_pipeline_matrix_breakdown", {})
+        syn = t23.get("synthetic_pack", {})
+        rnl = t23.get("real_nef_libraw", {})
+        hw_nef = t23.get("hardware_camera_nef", {})
+        if not (
+            t23.get("negative_m22_binary_gate_rejected") is True
+            and t23.get("negative_m22_hook14_unicorn_rejected") is True
+            and t23.get("adjacent_0x100a34d4_branch_intact") is True
+            and t23.get("site14_a34d0_dual_branch_and_apsr_cases") == 28
+            and t23.get("raw_pipeline_matrix_cases") == 437
+            and bd.get("grid_total") == 432
+            and bd.get("uncompressed_strip_and_mmio_verified") == 113
+            and bd.get("compressed_queue_descriptor_verified") == 216
+            and bd.get("jpeg_only_encoder_skip_verified") == 108
+            and bd.get("non_astro_stock_parity_verified") == 216
+            and (
+                bd.get("uncompressed_strip_and_mmio_verified", 0)
+                + bd.get("compressed_queue_descriptor_verified", 0)
+                + bd.get("jpeg_only_encoder_skip_verified", 0)
+            )
+            == 437
+        ):
+            errors.append("probe_modified23_native_result.json matrix breakdown or negative gate mismatch")
+        checks += 4
+
+        if not (
+            syn.get("status") == "PASS"
+            and syn.get("pixels_verified") == 24498560
+            and syn.get("packed14_strip_bytes") == 42920960
+            and syn.get("packed12_strip_bytes") == 36780160
+            and syn.get("max_abs_adu_diff") == 0
+            and rnl.get("status") == "PASS"
+            and rnl.get("clean_unmodified_sensor_row_count") == 3672
+            and rnl.get("clean_unmodified_sensor_pixels") == 22267008
+            and rnl.get("substituted_preview_overlay_rows") == [3633, 4000]
+            and rnl.get("substituted_preview_overlay_row_count") == 368
+            and rnl.get("substituted_preview_overlay_pixels") == 2231552
+            and rnl.get("repacked_strip_byte_counts") == 42920960
+            and rnl.get("embedded_preview_jpeg_slots_preserved") == 3
+            and rnl.get("max_abs_adu_diff_vs_prepack_reference") == 0
+            and (rnl.get("clean_unmodified_sensor_pixels", 0) + rnl.get("substituted_preview_overlay_pixels", 0))
+            == 24498560
+            and hw_nef.get("status") == "PASS"
+            and hw_nef.get("frames_verified") == 9
+            and hw_nef.get("uncompressed_packed14_frames") == 6
+            and hw_nef.get("lossless_14bit_frames") == 3
+            and hw_nef.get("hardware_packed14_pixels_verified") == 146991360
+            and hw_nef.get("libraw_vs_independent_pixel_diff_count") == 0
+            and hw_nef.get("preview_overlap_count") == 0
+            and t23.get("hardware_pixels_verified") is True
+        ):
+            errors.append("probe_modified23_native_result.json bit-packing or hardware_camera_nef scope mismatch")
+        checks += 5
+
+        # Cross-check m23_audit_metrics.json against catalog and recipe
+        fw_ut = m23_met.get("firmware_under_test", {})
+        a23 = m23_met.get("A_packed14_hardware_fullframe_verification", {})
+        d23 = m23_met.get("D_frozen112_spatial_filter_bypass", {})
+        if not (
+            fw_ut.get("eg162080_sha256") == m23_sha
+            and fw_ut.get("eg162080_crc16_hqx") == m23_crc
+            and fw_ut.get("total_patch_sites") == 105
+            and m23_met.get("method", {}).get("frames_total") == 9
+            and a23.get("files_checked") == 6
+            and a23.get("total_pixels_verified") == 146991360
+            and a23.get("all_identical_to_libraw") is True
+            and a23.get("total_pixel_diff_count") == 0
+            and a23.get("any_preview_overlap") is False
+            and a23.get("max_trailing_bytes_after_strip") == 0
+            and d23.get("all_zero_clamp_hits") is True
+            and d23.get("total_clamp_hits_across_9_frames") == 0
+            and d23.get("total_former_overlay_zone_hits") == 0
+        ):
+            errors.append("m23_audit_metrics.json invariant or pixel/clamp verification mismatch")
+        for pf23 in a23.get("per_file", []):
+            rel23 = pf23.get("rel_path", "")
+            ce23 = cat_by_rel.get(rel23)
+            if not ce23 or ce23.get("sha256") != pf23.get("sha256") or ce23.get("verified_raw_layout") != "packed_14bit_stride10624":
+                errors.append(f"Catalog vs m23_audit_metrics mismatch for {rel23}")
+            checks += 1
+        checks += 4
+
+        upd_files = m23_upd.get("file_checks") or []
+        upd_sched = m23_upd.get("scheduler") or []
+        upd_neg_cnt = sum(1 for row in upd_files if row.get("expected_rejection") is True)
+        if not (
+            m23_upd.get("ok") is True
+            and m23_upd.get("measured_modified23_sha256") == m23_sha
+            and m23_upd.get("measured_modified23_crc16_hqx") == m23_crc
+            and m23_upd.get("measured_modified23_size_bytes") == 33502842
+            and m23_upd.get("negative_m22_binary_rejected") is True
+            and m23_upd.get("physical_flash") is False
+            and len(upd_files) == 7
+            and upd_neg_cnt == 2
+            and len(upd_sched) == 5
+        ):
+            errors.append("modified23_updater_audit.json measured identity, negative rejection, or count mismatch")
+        checks += 3
+
+        fx_cmp = t23.get("fx_14bit_wide1_uncompressed_comparison", {})
+        m23_doc_tokens = (
+            m23_sha,
+            m23_crc,
+            f"{fx_cmp.get('m22_strip_byte_counts', 0):,}",
+            f"{fx_cmp.get('m23_strip_byte_counts', 0):,}",
+            f"{t23.get('packed12_strip_bytes', 0):,}",
+            f"{fx_cmp.get('preview_slot_headroom_bytes', 0):,}",
+            str(t23.get("raw_pipeline_matrix_cases", 0)),
+            str(bd.get("grid_total", 0)),
+            str(bd.get("uncompressed_strip_and_mmio_verified", 0)),
+            str(bd.get("compressed_queue_descriptor_verified", 0)),
+            str(bd.get("jpeg_only_encoder_skip_verified", 0)),
+            f"{rnl.get('clean_unmodified_sensor_row_count', 0):,}",
+            f"{rnl.get('clean_unmodified_sensor_pixels', 0):,}",
+            str(rnl.get("substituted_preview_overlay_row_count", 0)),
+            f"{rnl.get('substituted_preview_overlay_pixels', 0):,}",
+            "146,991,360",
+            "0.99955",
+            "Z61_5128",
+            "Z61_5136",
+            "3633..4000",
+            "4001..4039",
+            "hardware_pixels_verified = true",
+            "negative_m22_binary_gate_rejected",
+            "negative_m22_binary_rejected",
+            "330",
+        )
+        stale_m23_phrases = (
+            "Z61_5105.NEF` 硬件位打包",
+            "(`Z61_5105.NEF`) hardware bit-packing",
+            "Real-NEF `Z61_5105.NEF` Hardware Bit-Packing",
+            "Modified16 <-> Modified23",
+            "hardware_pixels_verified = false",
+            "刷机前完备验证候选",
+            "Pre-Flash Verified Candidate",
+        )
+        for rel_m23 in (
+            "docs/MODIFIED23_UNCOMPRESSED_ASTRO_RAW_FIX_2026-11-18.md",
+            "docs/MODIFIED23_UNCOMPRESSED_ASTRO_RAW_FIX_2026-11-18_EN.md",
+        ):
+            pm23 = repo / rel_m23
+            if pm23.is_file():
+                tm23 = pm23.read_text(encoding="utf-8")
+                for tok in m23_doc_tokens:
+                    if tok not in tm23:
+                        errors.append(f"{rel_m23} missing verified Modified23 value '{tok}'")
+                    checks += 1
+                for bad_phrase in stale_m23_phrases:
+                    if bad_phrase in tm23:
+                        errors.append(f"{rel_m23} contains stale/imprecise claim '{bad_phrase}'")
+                    checks += 1
     return checks
 
 
@@ -696,6 +972,8 @@ def run_hygiene_gate(repo: Path, tracked_only: bool = False, check_history: bool
 
 
 def main() -> int:
+    if not __debug__:
+        raise RuntimeError("verify_repo_hygiene.py must not be executed with Python -O/-OO.")
     ap = argparse.ArgumentParser(description=__doc__)
     ap.add_argument(
         "--repo",

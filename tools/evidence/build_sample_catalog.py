@@ -46,7 +46,7 @@ CAPTURE_THRESHOLDS["Scene"] = 40000.0   # no M22 anchor; provenance decides for 
 
 # provenance: batches whose frames are original-firmware captures
 STOCK_BATCHES = {"nas-2026-11-09"}      # manifest.json: "Verified byte-identical copies"
-ANCHORED_BATCHES = {"11.17_modified22"}
+ANCHORED_BATCHES = {"11.17_modified22", "11.19_modified23"}
 
 
 def category(exp_s, dark_frac):
@@ -133,8 +133,8 @@ def main():
             mode = comb_class
             if batch in ANCHORED_BATCHES:
                 conf = "anchored"
-                basis = ("11.17_modified22 Astro/Standard split is independently established; comb band peak "
-                         "%.1f vs %.1f threshold -> %s" % (cm["comb_band_0p22_0p24_peak"], thr, comb_class))
+                basis = ("%s capture protocol is independently established; comb band peak "
+                         "%.1f vs %.1f threshold -> %s" % (batch, cm["comb_band_0p22_0p24_peak"], thr, comb_class))
             elif agree == "agree":
                 conf = "corroborated"
                 basis = ("comb band peak %.1f vs %.1f threshold -> %s, and centre R/G1 %.4f -> %s (two "
@@ -240,7 +240,7 @@ def main():
     for e in files:
         summary.setdefault(e["sample_batch"], {}).setdefault(
             e["capture_mode"], []).append(e["rel_path"].split("/")[-1])
-
+    packed14_count = sum(1 for e in files if e["verified_raw_layout"] == "packed_14bit_stride10624")
     method = {
         "generator": "build_sample_catalog.py",
         "generator_version": L.GENERATOR_VERSION,
@@ -251,9 +251,9 @@ def main():
         "auxiliary_non_nef_count": len(aux),
         "decoding": {
             "lossless_14bit": "LibRaw 0.22.2 via rawpy 0.28.0 raw_image (Nikon lossless Huffman)",
-            "packed_14bit_stride10624": "independent Python LSB-first packed-14 unpacker, 10,624 B row stride, "
-                                        "10,612 B payload (7 bytes -> 4 pixels); verified pixel-identical to "
-                                        "LibRaw on all 20 packed-14 files in the tree",
+            "packed_14bit_stride10624": ("independent Python LSB-first packed-14 unpacker, 10,624 B row stride, "
+                                         "10,612 B payload (7 bytes -> 4 pixels); verified pixel-identical to "
+                                         "LibRaw on all %d packed-14 files in the tree" % packed14_count),
             "uncompressed_16bit_le_with_preview_overlay": "independent numpy '<u2' read at 12,128 B rows; rows "
                                                           "overlapping the embedded preview JPEGs are excluded",
         },

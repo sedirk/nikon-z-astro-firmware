@@ -15,11 +15,11 @@
   },
   "samples_root": "samples",
   "baseline112_source": "docs/evidence/baseline112.json",
-  "nef_count": 121,
+  "nef_count": 130,
   "auxiliary_non_nef_count": 2,
   "decoding": {
    "lossless_14bit": "LibRaw 0.22.2 via rawpy 0.28.0 raw_image (Nikon lossless Huffman)",
-   "packed_14bit_stride10624": "independent Python LSB-first packed-14 unpacker, 10,624 B row stride, 10,612 B payload (7 bytes -> 4 pixels); verified pixel-identical to LibRaw on all 20 packed-14 files in the tree",
+   "packed_14bit_stride10624": "independent Python LSB-first packed-14 unpacker, 10,624 B row stride, 10,612 B payload (7 bytes -> 4 pixels); verified pixel-identical to LibRaw on all 26 packed-14 files in the tree",
    "uncompressed_16bit_le_with_preview_overlay": "independent numpy '<u2' read at 12,128 B rows; rows overlapping the embedded preview JPEGs are excluded"
   },
   "geometry": {
@@ -174,7 +174,7 @@
    "libraw_packed14_misdecode_artifact": "True only for the 5 s Astro frames stored as uncompressed 16-bit LE, which LibRaw mis-decodes as packed-14"
   }
  },
- "nef_file_count": 121,
+ "nef_file_count": 130,
  "auxiliary_non_nef_files": [
   {
    "rel_path": "nas-2026-11-09/manifest.json",
@@ -184,8 +184,8 @@
   },
   {
    "rel_path": "README.md",
-   "size_bytes": 924,
-   "sha256": "aa9ea4731ddcae430af41fc6b3da534695dafa0ea0d2baa7b58ccd3af8cf45e9",
+   "size_bytes": 2214,
+   "sha256": "ba684485f40e6c72fd6ce29537766077857f0f3ff4f22006fccc2f1ea3524e73",
    "role": "auxiliary non-NEF file (excluded from the NEF count)"
   }
  ],
@@ -318,6 +318,19 @@
     "Z61_5119.NEF",
     "Z61_5120.NEF",
     "Z61_5121.NEF"
+   ]
+  },
+  "11.19_modified23": {
+   "Astro": [
+    "Z61_5128.NEF",
+    "Z61_5129.NEF",
+    "Z61_5130.NEF",
+    "Z61_5131.NEF",
+    "Z61_5132.NEF",
+    "Z61_5133.NEF",
+    "Z61_5134.NEF",
+    "Z61_5135.NEF",
+    "Z61_5136.NEF"
    ]
   },
   "11.9": {
@@ -7509,7 +7522,7 @@
    },
    "capture_mode": "Astro",
    "capture_mode_confidence": "anchored",
-   "capture_mode_basis": "11.17_modified22 Astro/Standard split is independently established; comb band peak 61550.9 vs 164227.5 threshold -> Astro",
+   "capture_mode_basis": "11.17_modified22 capture protocol is independently established; comb band peak 61550.9 vs 164227.5 threshold -> Astro",
    "capture_mode_corroboration": {
     "comb_band_threshold": 164227.5261690317,
     "comb_band_class": "Astro",
@@ -7618,7 +7631,7 @@
    },
    "capture_mode": "Astro",
    "capture_mode_confidence": "anchored",
-   "capture_mode_basis": "11.17_modified22 Astro/Standard split is independently established; comb band peak 64061.0 vs 164227.5 threshold -> Astro",
+   "capture_mode_basis": "11.17_modified22 capture protocol is independently established; comb band peak 64061.0 vs 164227.5 threshold -> Astro",
    "capture_mode_corroboration": {
     "comb_band_threshold": 164227.5261690317,
     "comb_band_class": "Astro",
@@ -7727,7 +7740,7 @@
    },
    "capture_mode": "Astro",
    "capture_mode_confidence": "anchored",
-   "capture_mode_basis": "11.17_modified22 Astro/Standard split is independently established; comb band peak 63311.9 vs 164227.5 threshold -> Astro",
+   "capture_mode_basis": "11.17_modified22 capture protocol is independently established; comb band peak 63311.9 vs 164227.5 threshold -> Astro",
    "capture_mode_corroboration": {
     "comb_band_threshold": 164227.5261690317,
     "comb_band_class": "Astro",
@@ -7891,7 +7904,7 @@
    },
    "capture_mode": "Astro",
    "capture_mode_confidence": "anchored",
-   "capture_mode_basis": "11.17_modified22 Astro/Standard split is independently established; comb band peak 100339.9 vs 204608.4 threshold -> Astro",
+   "capture_mode_basis": "11.17_modified22 capture protocol is independently established; comb band peak 100339.9 vs 204608.4 threshold -> Astro",
    "capture_mode_corroboration": {
     "comb_band_threshold": 204608.3527059685,
     "comb_band_class": "Astro",
@@ -8134,7 +8147,7 @@
    },
    "capture_mode": "Astro",
    "capture_mode_confidence": "anchored",
-   "capture_mode_basis": "11.17_modified22 Astro/Standard split is independently established; comb band peak 101078.1 vs 204608.4 threshold -> Astro",
+   "capture_mode_basis": "11.17_modified22 capture protocol is independently established; comb band peak 101078.1 vs 204608.4 threshold -> Astro",
    "capture_mode_corroboration": {
     "comb_band_threshold": 204608.3527059685,
     "comb_band_class": "Astro",
@@ -8377,7 +8390,7 @@
    },
    "capture_mode": "Astro",
    "capture_mode_confidence": "anchored",
-   "capture_mode_basis": "11.17_modified22 Astro/Standard split is independently established; comb band peak 98133.9 vs 204608.4 threshold -> Astro",
+   "capture_mode_basis": "11.17_modified22 capture protocol is independently established; comb band peak 98133.9 vs 204608.4 threshold -> Astro",
    "capture_mode_corroboration": {
     "comb_band_threshold": 204608.3527059685,
     "comb_band_class": "Astro",
@@ -8565,7 +8578,7 @@
    },
    "capture_mode": "Astro",
    "capture_mode_confidence": "anchored",
-   "capture_mode_basis": "11.17_modified22 Astro/Standard split is independently established; comb band peak 28450.9 vs 89226.5 threshold -> Astro",
+   "capture_mode_basis": "11.17_modified22 capture protocol is independently established; comb band peak 28450.9 vs 89226.5 threshold -> Astro",
    "capture_mode_corroboration": {
     "comb_band_threshold": 89226.48838612893,
     "comb_band_class": "Astro",
@@ -8674,7 +8687,7 @@
    },
    "capture_mode": "Astro",
    "capture_mode_confidence": "anchored",
-   "capture_mode_basis": "11.17_modified22 Astro/Standard split is independently established; comb band peak 27019.4 vs 89226.5 threshold -> Astro",
+   "capture_mode_basis": "11.17_modified22 capture protocol is independently established; comb band peak 27019.4 vs 89226.5 threshold -> Astro",
    "capture_mode_corroboration": {
     "comb_band_threshold": 89226.48838612893,
     "comb_band_class": "Astro",
@@ -8783,7 +8796,7 @@
    },
    "capture_mode": "Astro",
    "capture_mode_confidence": "anchored",
-   "capture_mode_basis": "11.17_modified22 Astro/Standard split is independently established; comb band peak 28628.4 vs 89226.5 threshold -> Astro",
+   "capture_mode_basis": "11.17_modified22 capture protocol is independently established; comb band peak 28628.4 vs 89226.5 threshold -> Astro",
    "capture_mode_corroboration": {
     "comb_band_threshold": 89226.48838612893,
     "comb_band_class": "Astro",
@@ -8892,7 +8905,7 @@
    },
    "capture_mode": "Standard",
    "capture_mode_confidence": "anchored",
-   "capture_mode_basis": "11.17_modified22 Astro/Standard split is independently established; comb band peak 422469.0 vs 164227.5 threshold -> Standard",
+   "capture_mode_basis": "11.17_modified22 capture protocol is independently established; comb band peak 422469.0 vs 164227.5 threshold -> Standard",
    "capture_mode_corroboration": {
     "comb_band_threshold": 164227.5261690317,
     "comb_band_class": "Standard",
@@ -9001,7 +9014,7 @@
    },
    "capture_mode": "Standard",
    "capture_mode_confidence": "anchored",
-   "capture_mode_basis": "11.17_modified22 Astro/Standard split is independently established; comb band peak 421015.6 vs 164227.5 threshold -> Standard",
+   "capture_mode_basis": "11.17_modified22 capture protocol is independently established; comb band peak 421015.6 vs 164227.5 threshold -> Standard",
    "capture_mode_corroboration": {
     "comb_band_threshold": 164227.5261690317,
     "comb_band_class": "Standard",
@@ -9110,7 +9123,7 @@
    },
    "capture_mode": "Standard",
    "capture_mode_confidence": "anchored",
-   "capture_mode_basis": "11.17_modified22 Astro/Standard split is independently established; comb band peak 421913.1 vs 164227.5 threshold -> Standard",
+   "capture_mode_basis": "11.17_modified22 capture protocol is independently established; comb band peak 421913.1 vs 164227.5 threshold -> Standard",
    "capture_mode_corroboration": {
     "comb_band_threshold": 164227.5261690317,
     "comb_band_class": "Standard",
@@ -9219,7 +9232,7 @@
    },
    "capture_mode": "Standard",
    "capture_mode_confidence": "anchored",
-   "capture_mode_basis": "11.17_modified22 Astro/Standard split is independently established; comb band peak 415227.9 vs 204608.4 threshold -> Standard",
+   "capture_mode_basis": "11.17_modified22 capture protocol is independently established; comb band peak 415227.9 vs 204608.4 threshold -> Standard",
    "capture_mode_corroboration": {
     "comb_band_threshold": 204608.3527059685,
     "comb_band_class": "Standard",
@@ -9328,7 +9341,7 @@
    },
    "capture_mode": "Standard",
    "capture_mode_confidence": "anchored",
-   "capture_mode_basis": "11.17_modified22 Astro/Standard split is independently established; comb band peak 416552.4 vs 204608.4 threshold -> Standard",
+   "capture_mode_basis": "11.17_modified22 capture protocol is independently established; comb band peak 416552.4 vs 204608.4 threshold -> Standard",
    "capture_mode_corroboration": {
     "comb_band_threshold": 204608.3527059685,
     "comb_band_class": "Standard",
@@ -9437,7 +9450,7 @@
    },
    "capture_mode": "Standard",
    "capture_mode_confidence": "anchored",
-   "capture_mode_basis": "11.17_modified22 Astro/Standard split is independently established; comb band peak 414180.5 vs 204608.4 threshold -> Standard",
+   "capture_mode_basis": "11.17_modified22 capture protocol is independently established; comb band peak 414180.5 vs 204608.4 threshold -> Standard",
    "capture_mode_corroboration": {
     "comb_band_threshold": 204608.3527059685,
     "comb_band_class": "Standard",
@@ -9546,7 +9559,7 @@
    },
    "capture_mode": "Standard",
    "capture_mode_confidence": "anchored",
-   "capture_mode_basis": "11.17_modified22 Astro/Standard split is independently established; comb band peak 278093.3 vs 89226.5 threshold -> Standard",
+   "capture_mode_basis": "11.17_modified22 capture protocol is independently established; comb band peak 278093.3 vs 89226.5 threshold -> Standard",
    "capture_mode_corroboration": {
     "comb_band_threshold": 89226.48838612893,
     "comb_band_class": "Standard",
@@ -9655,7 +9668,7 @@
    },
    "capture_mode": "Standard",
    "capture_mode_confidence": "anchored",
-   "capture_mode_basis": "11.17_modified22 Astro/Standard split is independently established; comb band peak 279979.4 vs 89226.5 threshold -> Standard",
+   "capture_mode_basis": "11.17_modified22 capture protocol is independently established; comb band peak 279979.4 vs 89226.5 threshold -> Standard",
    "capture_mode_corroboration": {
     "comb_band_threshold": 89226.48838612893,
     "comb_band_class": "Standard",
@@ -9764,7 +9777,7 @@
    },
    "capture_mode": "Standard",
    "capture_mode_confidence": "anchored",
-   "capture_mode_basis": "11.17_modified22 Astro/Standard split is independently established; comb band peak 278369.0 vs 89226.5 threshold -> Standard",
+   "capture_mode_basis": "11.17_modified22 capture protocol is independently established; comb band peak 278369.0 vs 89226.5 threshold -> Standard",
    "capture_mode_corroboration": {
     "comb_band_threshold": 89226.48838612893,
     "comb_band_class": "Standard",
@@ -9809,6 +9822,981 @@
    "comb_dominant_amp": 278369.031183246,
    "comb_dominant_prominence": 175.06992112058768,
    "hist_nonempty_bins_in_median_pm50": 101,
+   "libraw_packed14_misdecode_artifact": false
+  },
+  {
+   "rel_path": "11.19_modified23/Z61_5128.NEF",
+   "size_bytes": 27363922,
+   "sha256": "8bdb1e6717086c48ba411d07be68054cfd6af7032a7716561ea82fbfbd72f766",
+   "sample_batch": "11.19_modified23",
+   "firmware_tag": "IFD0.Software=Ver.03.80; MakerNote.header=0211",
+   "firmware_tag_source": "IFD0 0x0131 Software + MakerNote header version bytes (identical in all files)",
+   "datetime_original": "2026:11:19 00:59:58",
+   "exposure_time": 5.0,
+   "exposure_time_text": "5 s",
+   "iso": 1600,
+   "f_number": 1.8,
+   "focal_length_mm": 16.0,
+   "shutter_count_0x00a7": 480745,
+   "dcf_prefix": "Z61_",
+   "dcf_number": "5128",
+   "makernote_colorspace_0x001e": 1,
+   "makernote_colorspace_0x001e_text": "sRGB",
+   "black_level": [
+    1008,
+    1008,
+    1008,
+    1008
+   ],
+   "tiff_compression": 34713,
+   "bits_per_sample": 14,
+   "raw_strip_offset": 3299328,
+   "raw_strip_byte_count": 24064594,
+   "rows_per_strip": 4040,
+   "verified_raw_layout": "lossless_14bit",
+   "raw_layout_verification": {
+    "strip_offset": 3299328,
+    "strip_byte_count": 24064594,
+    "width": 6064,
+    "height": 4040,
+    "tiff_compression": 34713,
+    "bits_per_sample": [
+     14
+    ],
+    "strip_fits_file": true,
+    "layout": "lossless_14bit",
+    "row_stride_bytes": null,
+    "expected_bytes": null,
+    "verification": {
+     "compression_tag_is_34713": true,
+     "strip_smaller_than_uncompressed_14bit": true,
+     "compression_ratio_vs_14bit": 0.561306,
+     "compression_ratio_vs_16bit": 0.491143,
+     "decoder": "LibRaw 0.22.2 via rawpy 0.28.0 (Nikon lossless Huffman)"
+    }
+   },
+   "frame_category": "Dark",
+   "frame_category_basis": {
+    "exposure_time_s": 5.0,
+    "valid_area_median_adu": 1009.0,
+    "fraction_pixels_gt_black_plus_128_ADU": 0.00012207673272534108,
+    "rule": "no illumination (fraction > 1136 ADU <= 1e-3) -> Bias if exposure < 0.5 s else Dark; with illumination -> Flat if exposure < 0.5 s else Scene"
+   },
+   "capture_mode": "Astro",
+   "capture_mode_confidence": "anchored",
+   "capture_mode_basis": "11.19_modified23 capture protocol is independently established; comb band peak 92621.3 vs 204608.4 threshold -> Astro",
+   "capture_mode_corroboration": {
+    "comb_band_threshold": 204608.3527059685,
+    "comb_band_class": "Astro",
+    "center_R_G1_ratio": 0.9990089197224975,
+    "center_R_G1_class": null,
+    "agreement": "n/a (dark frame: R/G1 == 1.0000 by construction)"
+   },
+   "pixel_stats": {
+    "pixels": 24337152,
+    "min": 895,
+    "max": 16383,
+    "median": 1009.0,
+    "mean": 1009.3832427064597,
+    "zero_adu_count": 0,
+    "below_1008_count": 9229341,
+    "below_1008_ratio": 0.3792284734055982
+   },
+   "center_roi_channel_medians": {
+    "R": 1008.0,
+    "G1": 1009.0,
+    "G2": 1009.0,
+    "B": 1009.0
+   },
+   "center_R_G1_ratio": 0.9990089197224975,
+   "center_roi": {
+    "coord_space": "channel_plane",
+    "rows": [
+     505,
+     1515
+    ],
+    "cols": [
+     758,
+     2274
+    ],
+    "pixels_per_channel": 1531160
+   },
+   "comb_fft_bin3729_0p2276": 55255.26461239833,
+   "comb_band_0p22_0p24_peak": 92621.34122359195,
+   "comb_band_peak_freq": 0.239990234375,
+   "comb_dominant_freq_0p05_0p45": 0.050048828125,
+   "comb_dominant_spacing_dn": 19.98048780487805,
+   "comb_dominant_amp": 616825.6281069614,
+   "comb_dominant_prominence": 6.862290172762251,
+   "hist_nonempty_bins_in_median_pm50": 97,
+   "libraw_packed14_misdecode_artifact": false
+  },
+  {
+   "rel_path": "11.19_modified23/Z61_5129.NEF",
+   "size_bytes": 27351829,
+   "sha256": "04d43fc27b5e8a72009a908c63347db589ccd5ba1652676078aa2e28ef79145f",
+   "sample_batch": "11.19_modified23",
+   "firmware_tag": "IFD0.Software=Ver.03.80; MakerNote.header=0211",
+   "firmware_tag_source": "IFD0 0x0131 Software + MakerNote header version bytes (identical in all files)",
+   "datetime_original": "2026:11:19 01:00:04",
+   "exposure_time": 5.0,
+   "exposure_time_text": "5 s",
+   "iso": 1600,
+   "f_number": 1.8,
+   "focal_length_mm": 16.0,
+   "shutter_count_0x00a7": 480746,
+   "dcf_prefix": "Z61_",
+   "dcf_number": "5129",
+   "makernote_colorspace_0x001e": 1,
+   "makernote_colorspace_0x001e_text": "sRGB",
+   "black_level": [
+    1008,
+    1008,
+    1008,
+    1008
+   ],
+   "tiff_compression": 34713,
+   "bits_per_sample": 14,
+   "raw_strip_offset": 3291648,
+   "raw_strip_byte_count": 24060181,
+   "rows_per_strip": 4040,
+   "verified_raw_layout": "lossless_14bit",
+   "raw_layout_verification": {
+    "strip_offset": 3291648,
+    "strip_byte_count": 24060181,
+    "width": 6064,
+    "height": 4040,
+    "tiff_compression": 34713,
+    "bits_per_sample": [
+     14
+    ],
+    "strip_fits_file": true,
+    "layout": "lossless_14bit",
+    "row_stride_bytes": null,
+    "expected_bytes": null,
+    "verification": {
+     "compression_tag_is_34713": true,
+     "strip_smaller_than_uncompressed_14bit": true,
+     "compression_ratio_vs_14bit": 0.561203,
+     "compression_ratio_vs_16bit": 0.491053,
+     "decoder": "LibRaw 0.22.2 via rawpy 0.28.0 (Nikon lossless Huffman)"
+    }
+   },
+   "frame_category": "Dark",
+   "frame_category_basis": {
+    "exposure_time_s": 5.0,
+    "valid_area_median_adu": 1009.0,
+    "fraction_pixels_gt_black_plus_128_ADU": 0.00011796778850705292,
+    "rule": "no illumination (fraction > 1136 ADU <= 1e-3) -> Bias if exposure < 0.5 s else Dark; with illumination -> Flat if exposure < 0.5 s else Scene"
+   },
+   "capture_mode": "Astro",
+   "capture_mode_confidence": "anchored",
+   "capture_mode_basis": "11.19_modified23 capture protocol is independently established; comb band peak 93520.8 vs 204608.4 threshold -> Astro",
+   "capture_mode_corroboration": {
+    "comb_band_threshold": 204608.3527059685,
+    "comb_band_class": "Astro",
+    "center_R_G1_ratio": 0.9990089197224975,
+    "center_R_G1_class": null,
+    "agreement": "n/a (dark frame: R/G1 == 1.0000 by construction)"
+   },
+   "pixel_stats": {
+    "pixels": 24337152,
+    "min": 898,
+    "max": 16383,
+    "median": 1009.0,
+    "mean": 1009.2814080710841,
+    "zero_adu_count": 0,
+    "below_1008_count": 9400106,
+    "below_1008_ratio": 0.3862451119999579
+   },
+   "center_roi_channel_medians": {
+    "R": 1008.0,
+    "G1": 1009.0,
+    "G2": 1009.0,
+    "B": 1009.0
+   },
+   "center_R_G1_ratio": 0.9990089197224975,
+   "center_roi": {
+    "coord_space": "channel_plane",
+    "rows": [
+     505,
+     1515
+    ],
+    "cols": [
+     758,
+     2274
+    ],
+    "pixels_per_channel": 1531160
+   },
+   "comb_fft_bin3729_0p2276": 56423.42979630608,
+   "comb_band_0p22_0p24_peak": 93520.80698835652,
+   "comb_band_peak_freq": 0.239990234375,
+   "comb_dominant_freq_0p05_0p45": 0.050048828125,
+   "comb_dominant_spacing_dn": 19.98048780487805,
+   "comb_dominant_amp": 626673.6266862118,
+   "comb_dominant_prominence": 7.025490226855576,
+   "hist_nonempty_bins_in_median_pm50": 97,
+   "libraw_packed14_misdecode_artifact": false
+  },
+  {
+   "rel_path": "11.19_modified23/Z61_5130.NEF",
+   "size_bytes": 27376390,
+   "sha256": "7d5416d2215bc4ad75033dc0248e30359e056e7364cffcce8a27f35ac5231d1a",
+   "sample_batch": "11.19_modified23",
+   "firmware_tag": "IFD0.Software=Ver.03.80; MakerNote.header=0211",
+   "firmware_tag_source": "IFD0 0x0131 Software + MakerNote header version bytes (identical in all files)",
+   "datetime_original": "2026:11:19 01:00:09",
+   "exposure_time": 5.0,
+   "exposure_time_text": "5 s",
+   "iso": 1600,
+   "f_number": 1.8,
+   "focal_length_mm": 16.0,
+   "shutter_count_0x00a7": 480747,
+   "dcf_prefix": "Z61_",
+   "dcf_number": "5130",
+   "makernote_colorspace_0x001e": 1,
+   "makernote_colorspace_0x001e_text": "sRGB",
+   "black_level": [
+    1008,
+    1008,
+    1008,
+    1008
+   ],
+   "tiff_compression": 34713,
+   "bits_per_sample": 14,
+   "raw_strip_offset": 3318784,
+   "raw_strip_byte_count": 24057606,
+   "rows_per_strip": 4040,
+   "verified_raw_layout": "lossless_14bit",
+   "raw_layout_verification": {
+    "strip_offset": 3318784,
+    "strip_byte_count": 24057606,
+    "width": 6064,
+    "height": 4040,
+    "tiff_compression": 34713,
+    "bits_per_sample": [
+     14
+    ],
+    "strip_fits_file": true,
+    "layout": "lossless_14bit",
+    "row_stride_bytes": null,
+    "expected_bytes": null,
+    "verification": {
+     "compression_tag_is_34713": true,
+     "strip_smaller_than_uncompressed_14bit": true,
+     "compression_ratio_vs_14bit": 0.561143,
+     "compression_ratio_vs_16bit": 0.491,
+     "decoder": "LibRaw 0.22.2 via rawpy 0.28.0 (Nikon lossless Huffman)"
+    }
+   },
+   "frame_category": "Dark",
+   "frame_category_basis": {
+    "exposure_time_s": 5.0,
+    "valid_area_median_adu": 1009.0,
+    "fraction_pixels_gt_black_plus_128_ADU": 0.00011640638970410342,
+    "rule": "no illumination (fraction > 1136 ADU <= 1e-3) -> Bias if exposure < 0.5 s else Dark; with illumination -> Flat if exposure < 0.5 s else Scene"
+   },
+   "capture_mode": "Astro",
+   "capture_mode_confidence": "anchored",
+   "capture_mode_basis": "11.19_modified23 capture protocol is independently established; comb band peak 92620.0 vs 204608.4 threshold -> Astro",
+   "capture_mode_corroboration": {
+    "comb_band_threshold": 204608.3527059685,
+    "comb_band_class": "Astro",
+    "center_R_G1_ratio": 1.0,
+    "center_R_G1_class": null,
+    "agreement": "n/a (dark frame: R/G1 == 1.0000 by construction)"
+   },
+   "pixel_stats": {
+    "pixels": 24337152,
+    "min": 909,
+    "max": 16383,
+    "median": 1009.0,
+    "mean": 1009.5056721509567,
+    "zero_adu_count": 0,
+    "below_1008_count": 8866564,
+    "below_1008_ratio": 0.36432216883881896
+   },
+   "center_roi_channel_medians": {
+    "R": 1009.0,
+    "G1": 1009.0,
+    "G2": 1009.0,
+    "B": 1009.0
+   },
+   "center_R_G1_ratio": 1.0,
+   "center_roi": {
+    "coord_space": "channel_plane",
+    "rows": [
+     505,
+     1515
+    ],
+    "cols": [
+     758,
+     2274
+    ],
+    "pixels_per_channel": 1531160
+   },
+   "comb_fft_bin3729_0p2276": 62393.49523922733,
+   "comb_band_0p22_0p24_peak": 92619.97226722466,
+   "comb_band_peak_freq": 0.239990234375,
+   "comb_dominant_freq_0p05_0p45": 0.050048828125,
+   "comb_dominant_spacing_dn": 19.98048780487805,
+   "comb_dominant_amp": 621491.2264684725,
+   "comb_dominant_prominence": 6.638746448999699,
+   "hist_nonempty_bins_in_median_pm50": 97,
+   "libraw_packed14_misdecode_artifact": false
+  },
+  {
+   "rel_path": "11.19_modified23/Z61_5131.NEF",
+   "size_bytes": 46244352,
+   "sha256": "7f76d80f81a933cfb006babdb102f3146065b3a0bd5a2e82cabf5a181e3a898d",
+   "sample_batch": "11.19_modified23",
+   "firmware_tag": "IFD0.Software=Ver.03.80; MakerNote.header=0211",
+   "firmware_tag_source": "IFD0 0x0131 Software + MakerNote header version bytes (identical in all files)",
+   "datetime_original": "2026:11:19 01:00:28",
+   "exposure_time": 5.0,
+   "exposure_time_text": "5 s",
+   "iso": 1600,
+   "f_number": 1.8,
+   "focal_length_mm": 16.0,
+   "shutter_count_0x00a7": 480748,
+   "dcf_prefix": "Z61_",
+   "dcf_number": "5131",
+   "makernote_colorspace_0x001e": 1,
+   "makernote_colorspace_0x001e_text": "sRGB",
+   "black_level": [
+    1008,
+    1008,
+    1008,
+    1008
+   ],
+   "tiff_compression": 34713,
+   "bits_per_sample": 14,
+   "raw_strip_offset": 3323392,
+   "raw_strip_byte_count": 42920960,
+   "rows_per_strip": 4040,
+   "verified_raw_layout": "packed_14bit_stride10624",
+   "raw_layout_verification": {
+    "strip_offset": 3323392,
+    "strip_byte_count": 42920960,
+    "width": 6064,
+    "height": 4040,
+    "tiff_compression": 34713,
+    "bits_per_sample": [
+     14
+    ],
+    "strip_fits_file": true,
+    "layout": "packed_14bit_stride10624",
+    "row_stride_bytes": 10624,
+    "payload_bytes_per_row": 10612,
+    "expected_bytes": 42920960,
+    "verification": {
+     "strip_bytes_equals_Hx10624": true,
+     "strip_end_equals_filesize": true,
+     "unpack_payload_equals_stride": true,
+     "mean_abs_neighbour_diff_stride10624": 5.617,
+     "mean_abs_neighbour_diff_stride10612": 2030.822,
+     "stride_discriminates_layout": true
+    }
+   },
+   "frame_category": "Dark",
+   "frame_category_basis": {
+    "exposure_time_s": 5.0,
+    "valid_area_median_adu": 1009.0,
+    "fraction_pixels_gt_black_plus_128_ADU": 0.0001159954952822746,
+    "rule": "no illumination (fraction > 1136 ADU <= 1e-3) -> Bias if exposure < 0.5 s else Dark; with illumination -> Flat if exposure < 0.5 s else Scene"
+   },
+   "capture_mode": "Astro",
+   "capture_mode_confidence": "anchored",
+   "capture_mode_basis": "11.19_modified23 capture protocol is independently established; comb band peak 94513.1 vs 204608.4 threshold -> Astro",
+   "capture_mode_corroboration": {
+    "comb_band_threshold": 204608.3527059685,
+    "comb_band_class": "Astro",
+    "center_R_G1_ratio": 1.0,
+    "center_R_G1_class": null,
+    "agreement": "n/a (dark frame: R/G1 == 1.0000 by construction)"
+   },
+   "pixel_stats": {
+    "pixels": 24337152,
+    "min": 909,
+    "max": 16383,
+    "median": 1009.0,
+    "mean": 1009.6527786817455,
+    "zero_adu_count": 0,
+    "below_1008_count": 8486692,
+    "below_1008_ratio": 0.34871344025792333
+   },
+   "center_roi_channel_medians": {
+    "R": 1009.0,
+    "G1": 1009.0,
+    "G2": 1009.0,
+    "B": 1009.0
+   },
+   "center_R_G1_ratio": 1.0,
+   "center_roi": {
+    "coord_space": "channel_plane",
+    "rows": [
+     505,
+     1515
+    ],
+    "cols": [
+     758,
+     2274
+    ],
+    "pixels_per_channel": 1531160
+   },
+   "comb_fft_bin3729_0p2276": 65152.172587647474,
+   "comb_band_0p22_0p24_peak": 94513.09595163571,
+   "comb_band_peak_freq": 0.239990234375,
+   "comb_dominant_freq_0p05_0p45": 0.050048828125,
+   "comb_dominant_spacing_dn": 19.98048780487805,
+   "comb_dominant_amp": 617439.1858742066,
+   "comb_dominant_prominence": 6.5269767189245815,
+   "hist_nonempty_bins_in_median_pm50": 98,
+   "libraw_packed14_misdecode_artifact": false
+  },
+  {
+   "rel_path": "11.19_modified23/Z61_5132.NEF",
+   "size_bytes": 46238720,
+   "sha256": "27386fdfc2f50318ba4b53cf8a7aab3ba89b2189264123a815a8856b7c6c352d",
+   "sample_batch": "11.19_modified23",
+   "firmware_tag": "IFD0.Software=Ver.03.80; MakerNote.header=0211",
+   "firmware_tag_source": "IFD0 0x0131 Software + MakerNote header version bytes (identical in all files)",
+   "datetime_original": "2026:11:19 01:00:33",
+   "exposure_time": 5.0,
+   "exposure_time_text": "5 s",
+   "iso": 1600,
+   "f_number": 1.8,
+   "focal_length_mm": 16.0,
+   "shutter_count_0x00a7": 480749,
+   "dcf_prefix": "Z61_",
+   "dcf_number": "5132",
+   "makernote_colorspace_0x001e": 1,
+   "makernote_colorspace_0x001e_text": "sRGB",
+   "black_level": [
+    1008,
+    1008,
+    1008,
+    1008
+   ],
+   "tiff_compression": 34713,
+   "bits_per_sample": 14,
+   "raw_strip_offset": 3317760,
+   "raw_strip_byte_count": 42920960,
+   "rows_per_strip": 4040,
+   "verified_raw_layout": "packed_14bit_stride10624",
+   "raw_layout_verification": {
+    "strip_offset": 3317760,
+    "strip_byte_count": 42920960,
+    "width": 6064,
+    "height": 4040,
+    "tiff_compression": 34713,
+    "bits_per_sample": [
+     14
+    ],
+    "strip_fits_file": true,
+    "layout": "packed_14bit_stride10624",
+    "row_stride_bytes": 10624,
+    "payload_bytes_per_row": 10612,
+    "expected_bytes": 42920960,
+    "verification": {
+     "strip_bytes_equals_Hx10624": true,
+     "strip_end_equals_filesize": true,
+     "unpack_payload_equals_stride": true,
+     "mean_abs_neighbour_diff_stride10624": 5.458,
+     "mean_abs_neighbour_diff_stride10612": 2038.007,
+     "stride_discriminates_layout": true
+    }
+   },
+   "frame_category": "Dark",
+   "frame_category_basis": {
+    "exposure_time_s": 5.0,
+    "valid_area_median_adu": 1009.0,
+    "fraction_pixels_gt_black_plus_128_ADU": 0.00011455736480587375,
+    "rule": "no illumination (fraction > 1136 ADU <= 1e-3) -> Bias if exposure < 0.5 s else Dark; with illumination -> Flat if exposure < 0.5 s else Scene"
+   },
+   "capture_mode": "Astro",
+   "capture_mode_confidence": "anchored",
+   "capture_mode_basis": "11.19_modified23 capture protocol is independently established; comb band peak 92856.0 vs 204608.4 threshold -> Astro",
+   "capture_mode_corroboration": {
+    "comb_band_threshold": 204608.3527059685,
+    "comb_band_class": "Astro",
+    "center_R_G1_ratio": 1.0,
+    "center_R_G1_class": null,
+    "agreement": "n/a (dark frame: R/G1 == 1.0000 by construction)"
+   },
+   "pixel_stats": {
+    "pixels": 24337152,
+    "min": 875,
+    "max": 16383,
+    "median": 1009.0,
+    "mean": 1009.7118821873652,
+    "zero_adu_count": 0,
+    "below_1008_count": 8513819,
+    "below_1008_ratio": 0.34982807355601836
+   },
+   "center_roi_channel_medians": {
+    "R": 1009.0,
+    "G1": 1009.0,
+    "G2": 1009.0,
+    "B": 1009.0
+   },
+   "center_R_G1_ratio": 1.0,
+   "center_roi": {
+    "coord_space": "channel_plane",
+    "rows": [
+     505,
+     1515
+    ],
+    "cols": [
+     758,
+     2274
+    ],
+    "pixels_per_channel": 1531160
+   },
+   "comb_fft_bin3729_0p2276": 62977.961033662796,
+   "comb_band_0p22_0p24_peak": 92855.9755026178,
+   "comb_band_peak_freq": 0.239990234375,
+   "comb_dominant_freq_0p05_0p45": 0.050048828125,
+   "comb_dominant_spacing_dn": 19.98048780487805,
+   "comb_dominant_amp": 620558.5345781103,
+   "comb_dominant_prominence": 6.593131746787084,
+   "hist_nonempty_bins_in_median_pm50": 97,
+   "libraw_packed14_misdecode_artifact": false
+  },
+  {
+   "rel_path": "11.19_modified23/Z61_5133.NEF",
+   "size_bytes": 46236672,
+   "sha256": "8de9c923ffbad20a590a77447eda6de246154757d6ab4a905c3ff48486693cfb",
+   "sample_batch": "11.19_modified23",
+   "firmware_tag": "IFD0.Software=Ver.03.80; MakerNote.header=0211",
+   "firmware_tag_source": "IFD0 0x0131 Software + MakerNote header version bytes (identical in all files)",
+   "datetime_original": "2026:11:19 01:00:39",
+   "exposure_time": 5.0,
+   "exposure_time_text": "5 s",
+   "iso": 1600,
+   "f_number": 1.8,
+   "focal_length_mm": 16.0,
+   "shutter_count_0x00a7": 480750,
+   "dcf_prefix": "Z61_",
+   "dcf_number": "5133",
+   "makernote_colorspace_0x001e": 1,
+   "makernote_colorspace_0x001e_text": "sRGB",
+   "black_level": [
+    1008,
+    1008,
+    1008,
+    1008
+   ],
+   "tiff_compression": 34713,
+   "bits_per_sample": 14,
+   "raw_strip_offset": 3315712,
+   "raw_strip_byte_count": 42920960,
+   "rows_per_strip": 4040,
+   "verified_raw_layout": "packed_14bit_stride10624",
+   "raw_layout_verification": {
+    "strip_offset": 3315712,
+    "strip_byte_count": 42920960,
+    "width": 6064,
+    "height": 4040,
+    "tiff_compression": 34713,
+    "bits_per_sample": [
+     14
+    ],
+    "strip_fits_file": true,
+    "layout": "packed_14bit_stride10624",
+    "row_stride_bytes": 10624,
+    "payload_bytes_per_row": 10612,
+    "expected_bytes": 42920960,
+    "verification": {
+     "strip_bytes_equals_Hx10624": true,
+     "strip_end_equals_filesize": true,
+     "unpack_payload_equals_stride": true,
+     "mean_abs_neighbour_diff_stride10624": 5.446,
+     "mean_abs_neighbour_diff_stride10612": 2038.42,
+     "stride_discriminates_layout": true
+    }
+   },
+   "frame_category": "Dark",
+   "frame_category_basis": {
+    "exposure_time_s": 5.0,
+    "valid_area_median_adu": 1009.0,
+    "fraction_pixels_gt_black_plus_128_ADU": 0.00011496825922770256,
+    "rule": "no illumination (fraction > 1136 ADU <= 1e-3) -> Bias if exposure < 0.5 s else Dark; with illumination -> Flat if exposure < 0.5 s else Scene"
+   },
+   "capture_mode": "Astro",
+   "capture_mode_confidence": "anchored",
+   "capture_mode_basis": "11.19_modified23 capture protocol is independently established; comb band peak 93064.3 vs 204608.4 threshold -> Astro",
+   "capture_mode_corroboration": {
+    "comb_band_threshold": 204608.3527059685,
+    "comb_band_class": "Astro",
+    "center_R_G1_ratio": 1.0,
+    "center_R_G1_class": null,
+    "agreement": "n/a (dark frame: R/G1 == 1.0000 by construction)"
+   },
+   "pixel_stats": {
+    "pixels": 24337152,
+    "min": 897,
+    "max": 16383,
+    "median": 1009.0,
+    "mean": 1009.6932248276215,
+    "zero_adu_count": 0,
+    "below_1008_count": 8546571,
+    "below_1008_ratio": 0.35117383496639215
+   },
+   "center_roi_channel_medians": {
+    "R": 1009.0,
+    "G1": 1009.0,
+    "G2": 1009.0,
+    "B": 1009.0
+   },
+   "center_R_G1_ratio": 1.0,
+   "center_roi": {
+    "coord_space": "channel_plane",
+    "rows": [
+     505,
+     1515
+    ],
+    "cols": [
+     758,
+     2274
+    ],
+    "pixels_per_channel": 1531160
+   },
+   "comb_fft_bin3729_0p2276": 63133.452608400876,
+   "comb_band_0p22_0p24_peak": 93064.34261257233,
+   "comb_band_peak_freq": 0.239990234375,
+   "comb_dominant_freq_0p05_0p45": 0.050048828125,
+   "comb_dominant_spacing_dn": 19.98048780487805,
+   "comb_dominant_amp": 621709.2435378007,
+   "comb_dominant_prominence": 6.580622851837288,
+   "hist_nonempty_bins_in_median_pm50": 95,
+   "libraw_packed14_misdecode_artifact": false
+  },
+  {
+   "rel_path": "11.19_modified23/Z61_5134.NEF",
+   "size_bytes": 46355968,
+   "sha256": "7350ce9b46f72dfc7128d8424dddefd852da5bfa891ba0401511c1c5e0fa7c28",
+   "sample_batch": "11.19_modified23",
+   "firmware_tag": "IFD0.Software=Ver.03.80; MakerNote.header=0211",
+   "firmware_tag_source": "IFD0 0x0131 Software + MakerNote header version bytes (identical in all files)",
+   "datetime_original": "2026:11:19 01:01:37",
+   "exposure_time": 60.0,
+   "exposure_time_text": "60 s",
+   "iso": 1600,
+   "f_number": 1.8,
+   "focal_length_mm": 16.0,
+   "shutter_count_0x00a7": 480751,
+   "dcf_prefix": "Z61_",
+   "dcf_number": "5134",
+   "makernote_colorspace_0x001e": 1,
+   "makernote_colorspace_0x001e_text": "sRGB",
+   "black_level": [
+    1008,
+    1008,
+    1008,
+    1008
+   ],
+   "tiff_compression": 34713,
+   "bits_per_sample": 14,
+   "raw_strip_offset": 3435008,
+   "raw_strip_byte_count": 42920960,
+   "rows_per_strip": 4040,
+   "verified_raw_layout": "packed_14bit_stride10624",
+   "raw_layout_verification": {
+    "strip_offset": 3435008,
+    "strip_byte_count": 42920960,
+    "width": 6064,
+    "height": 4040,
+    "tiff_compression": 34713,
+    "bits_per_sample": [
+     14
+    ],
+    "strip_fits_file": true,
+    "layout": "packed_14bit_stride10624",
+    "row_stride_bytes": 10624,
+    "payload_bytes_per_row": 10612,
+    "expected_bytes": 42920960,
+    "verification": {
+     "strip_bytes_equals_Hx10624": true,
+     "strip_end_equals_filesize": true,
+     "unpack_payload_equals_stride": true,
+     "mean_abs_neighbour_diff_stride10624": 10.66,
+     "mean_abs_neighbour_diff_stride10612": 2382.514,
+     "stride_discriminates_layout": true
+    }
+   },
+   "frame_category": "Dark",
+   "frame_category_basis": {
+    "exposure_time_s": 60.0,
+    "valid_area_median_adu": 1008.0,
+    "fraction_pixels_gt_black_plus_128_ADU": 0.00013008917395100297,
+    "rule": "no illumination (fraction > 1136 ADU <= 1e-3) -> Bias if exposure < 0.5 s else Dark; with illumination -> Flat if exposure < 0.5 s else Scene"
+   },
+   "capture_mode": "Astro",
+   "capture_mode_confidence": "anchored",
+   "capture_mode_basis": "11.19_modified23 capture protocol is independently established; comb band peak 93261.3 vs 204608.4 threshold -> Astro",
+   "capture_mode_corroboration": {
+    "comb_band_threshold": 204608.3527059685,
+    "comb_band_class": "Astro",
+    "center_R_G1_ratio": 1.0009920634920635,
+    "center_R_G1_class": null,
+    "agreement": "n/a (dark frame: R/G1 == 1.0000 by construction)"
+   },
+   "pixel_stats": {
+    "pixels": 24337152,
+    "min": 909,
+    "max": 16383,
+    "median": 1008.0,
+    "mean": 1009.6366336948547,
+    "zero_adu_count": 0,
+    "below_1008_count": 11240941,
+    "below_1008_ratio": 0.4618839953006827
+   },
+   "center_roi_channel_medians": {
+    "R": 1009.0,
+    "G1": 1008.0,
+    "G2": 1009.0,
+    "B": 1008.0
+   },
+   "center_R_G1_ratio": 1.0009920634920635,
+   "center_roi": {
+    "coord_space": "channel_plane",
+    "rows": [
+     505,
+     1515
+    ],
+    "cols": [
+     758,
+     2274
+    ],
+    "pixels_per_channel": 1531160
+   },
+   "comb_fft_bin3729_0p2276": 66857.1508987751,
+   "comb_band_0p22_0p24_peak": 93261.32345184872,
+   "comb_band_peak_freq": 0.239990234375,
+   "comb_dominant_freq_0p05_0p45": 0.0902099609375,
+   "comb_dominant_spacing_dn": 11.085250338294994,
+   "comb_dominant_amp": 140727.3623099329,
+   "comb_dominant_prominence": 1.588202048939113,
+   "hist_nonempty_bins_in_median_pm50": 101,
+   "libraw_packed14_misdecode_artifact": false
+  },
+  {
+   "rel_path": "11.19_modified23/Z61_5135.NEF",
+   "size_bytes": 46364672,
+   "sha256": "b869f0487ef58925e20308bc21e24a5fd3c2cc492c60cf95eb239a43dae9726e",
+   "sample_batch": "11.19_modified23",
+   "firmware_tag": "IFD0.Software=Ver.03.80; MakerNote.header=0211",
+   "firmware_tag_source": "IFD0 0x0131 Software + MakerNote header version bytes (identical in all files)",
+   "datetime_original": "2026:11:19 01:02:37",
+   "exposure_time": 60.0,
+   "exposure_time_text": "60 s",
+   "iso": 1600,
+   "f_number": 1.8,
+   "focal_length_mm": 16.0,
+   "shutter_count_0x00a7": 480752,
+   "dcf_prefix": "Z61_",
+   "dcf_number": "5135",
+   "makernote_colorspace_0x001e": 1,
+   "makernote_colorspace_0x001e_text": "sRGB",
+   "black_level": [
+    1008,
+    1008,
+    1008,
+    1008
+   ],
+   "tiff_compression": 34713,
+   "bits_per_sample": 14,
+   "raw_strip_offset": 3443712,
+   "raw_strip_byte_count": 42920960,
+   "rows_per_strip": 4040,
+   "verified_raw_layout": "packed_14bit_stride10624",
+   "raw_layout_verification": {
+    "strip_offset": 3443712,
+    "strip_byte_count": 42920960,
+    "width": 6064,
+    "height": 4040,
+    "tiff_compression": 34713,
+    "bits_per_sample": [
+     14
+    ],
+    "strip_fits_file": true,
+    "layout": "packed_14bit_stride10624",
+    "row_stride_bytes": 10624,
+    "payload_bytes_per_row": 10612,
+    "expected_bytes": 42920960,
+    "verification": {
+     "strip_bytes_equals_Hx10624": true,
+     "strip_end_equals_filesize": true,
+     "unpack_payload_equals_stride": true,
+     "mean_abs_neighbour_diff_stride10624": 10.575,
+     "mean_abs_neighbour_diff_stride10612": 2423.881,
+     "stride_discriminates_layout": true
+    }
+   },
+   "frame_category": "Dark",
+   "frame_category_basis": {
+    "exposure_time_s": 60.0,
+    "valid_area_median_adu": 1009.0,
+    "fraction_pixels_gt_black_plus_128_ADU": 0.00013041788948846603,
+    "rule": "no illumination (fraction > 1136 ADU <= 1e-3) -> Bias if exposure < 0.5 s else Dark; with illumination -> Flat if exposure < 0.5 s else Scene"
+   },
+   "capture_mode": "Astro",
+   "capture_mode_confidence": "anchored",
+   "capture_mode_basis": "11.19_modified23 capture protocol is independently established; comb band peak 97087.0 vs 204608.4 threshold -> Astro",
+   "capture_mode_corroboration": {
+    "comb_band_threshold": 204608.3527059685,
+    "comb_band_class": "Astro",
+    "center_R_G1_ratio": 1.0,
+    "center_R_G1_class": null,
+    "agreement": "n/a (dark frame: R/G1 == 1.0000 by construction)"
+   },
+   "pixel_stats": {
+    "pixels": 24337152,
+    "min": 892,
+    "max": 16383,
+    "median": 1009.0,
+    "mean": 1010.2063713946479,
+    "zero_adu_count": 0,
+    "below_1008_count": 10488574,
+    "below_1008_ratio": 0.4309696549538746
+   },
+   "center_roi_channel_medians": {
+    "R": 1009.0,
+    "G1": 1009.0,
+    "G2": 1009.0,
+    "B": 1009.0
+   },
+   "center_R_G1_ratio": 1.0,
+   "center_roi": {
+    "coord_space": "channel_plane",
+    "rows": [
+     505,
+     1515
+    ],
+    "cols": [
+     758,
+     2274
+    ],
+    "pixels_per_channel": 1531160
+   },
+   "comb_fft_bin3729_0p2276": 68947.82349010058,
+   "comb_band_0p22_0p24_peak": 97087.01709928382,
+   "comb_band_peak_freq": 0.239990234375,
+   "comb_dominant_freq_0p05_0p45": 0.09027099609375,
+   "comb_dominant_spacing_dn": 11.077755240027045,
+   "comb_dominant_amp": 141436.5949460252,
+   "comb_dominant_prominence": 1.5895183958930468,
+   "hist_nonempty_bins_in_median_pm50": 100,
+   "libraw_packed14_misdecode_artifact": false
+  },
+  {
+   "rel_path": "11.19_modified23/Z61_5136.NEF",
+   "size_bytes": 46374400,
+   "sha256": "1e273c286fca9ed11930e4374ddc684af7ee151f729eafb993d1d88f28a4d128",
+   "sample_batch": "11.19_modified23",
+   "firmware_tag": "IFD0.Software=Ver.03.80; MakerNote.header=0211",
+   "firmware_tag_source": "IFD0 0x0131 Software + MakerNote header version bytes (identical in all files)",
+   "datetime_original": "2026:11:19 01:03:38",
+   "exposure_time": 60.0,
+   "exposure_time_text": "60 s",
+   "iso": 1600,
+   "f_number": 1.8,
+   "focal_length_mm": 16.0,
+   "shutter_count_0x00a7": 480753,
+   "dcf_prefix": "Z61_",
+   "dcf_number": "5136",
+   "makernote_colorspace_0x001e": 1,
+   "makernote_colorspace_0x001e_text": "sRGB",
+   "black_level": [
+    1008,
+    1008,
+    1008,
+    1008
+   ],
+   "tiff_compression": 34713,
+   "bits_per_sample": 14,
+   "raw_strip_offset": 3453440,
+   "raw_strip_byte_count": 42920960,
+   "rows_per_strip": 4040,
+   "verified_raw_layout": "packed_14bit_stride10624",
+   "raw_layout_verification": {
+    "strip_offset": 3453440,
+    "strip_byte_count": 42920960,
+    "width": 6064,
+    "height": 4040,
+    "tiff_compression": 34713,
+    "bits_per_sample": [
+     14
+    ],
+    "strip_fits_file": true,
+    "layout": "packed_14bit_stride10624",
+    "row_stride_bytes": 10624,
+    "payload_bytes_per_row": 10612,
+    "expected_bytes": 42920960,
+    "verification": {
+     "strip_bytes_equals_Hx10624": true,
+     "strip_end_equals_filesize": true,
+     "unpack_payload_equals_stride": true,
+     "mean_abs_neighbour_diff_stride10624": 10.673,
+     "mean_abs_neighbour_diff_stride10612": 2409.042,
+     "stride_discriminates_layout": true
+    }
+   },
+   "frame_category": "Dark",
+   "frame_category_basis": {
+    "exposure_time_s": 60.0,
+    "valid_area_median_adu": 1009.0,
+    "fraction_pixels_gt_black_plus_128_ADU": 0.0001288975801276994,
+    "rule": "no illumination (fraction > 1136 ADU <= 1e-3) -> Bias if exposure < 0.5 s else Dark; with illumination -> Flat if exposure < 0.5 s else Scene"
+   },
+   "capture_mode": "Astro",
+   "capture_mode_confidence": "anchored",
+   "capture_mode_basis": "11.19_modified23 capture protocol is independently established; comb band peak 93540.7 vs 204608.4 threshold -> Astro",
+   "capture_mode_corroboration": {
+    "comb_band_threshold": 204608.3527059685,
+    "comb_band_class": "Astro",
+    "center_R_G1_ratio": 1.0,
+    "center_R_G1_class": null,
+    "agreement": "n/a (dark frame: R/G1 == 1.0000 by construction)"
+   },
+   "pixel_stats": {
+    "pixels": 24337152,
+    "min": 895,
+    "max": 16383,
+    "median": 1009.0,
+    "mean": 1010.0272316990912,
+    "zero_adu_count": 0,
+    "below_1008_count": 10760234,
+    "below_1008_ratio": 0.4421320128172762
+   },
+   "center_roi_channel_medians": {
+    "R": 1009.0,
+    "G1": 1009.0,
+    "G2": 1009.0,
+    "B": 1009.0
+   },
+   "center_R_G1_ratio": 1.0,
+   "center_roi": {
+    "coord_space": "channel_plane",
+    "rows": [
+     505,
+     1515
+    ],
+    "cols": [
+     758,
+     2274
+    ],
+    "pixels_per_channel": 1531160
+   },
+   "comb_fft_bin3729_0p2276": 65276.800580186704,
+   "comb_band_0p22_0p24_peak": 93540.65320913783,
+   "comb_band_peak_freq": 0.239990234375,
+   "comb_dominant_freq_0p05_0p45": 0.09014892578125,
+   "comb_dominant_spacing_dn": 11.09275558564658,
+   "comb_dominant_amp": 141432.1179399625,
+   "comb_dominant_prominence": 1.6023308102127494,
+   "hist_nonempty_bins_in_median_pm50": 100,
    "libraw_packed14_misdecode_artifact": false
   },
   {
