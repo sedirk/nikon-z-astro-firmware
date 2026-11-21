@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Automated repository hygiene, licensing, privacy, and documentation gate.
 
-Verifies that the public Nikon Z6 C3.80 Astro Firmware (`Modified23`) repository tree:
+Verifies that the public Nikon Z6 C3.80 Astro Firmware (`Modified24`) repository tree:
   1. Contains zero `.gitignore`-violating tracked files, proprietary firmware binaries,
      camera dumps, raw NEF files, or non-redistributable `references/` snapshots;
   2. Respects clean-room mask recovery boundaries (`z6_c380_container.py` without
@@ -11,7 +11,8 @@ Verifies that the public Nikon Z6 C3.80 Astro Firmware (`Modified23`) repository
   4. Has 100% valid UTF-8 text files, valid JSON recipes/catalogs, zero broken or
      ignored-target Markdown links, and zero double-escaped LaTeX sequences;
   5. Cross-verifies quantitative claims in Markdown audit/technical reports against
-     committed JSON evidence (`SAMPLE_EVIDENCE_CATALOG.json`, `m22_audit_metrics.json`, `m23_audit_metrics.json`);
+     committed JSON evidence (`SAMPLE_EVIDENCE_CATALOG.json`, `m22_audit_metrics.json`,
+     `m23_audit_metrics.json`, and `Modified24` native/QEMU/updater records);
   6. (With `--check-history`) Enumerates every reachable commit tree's full path set
      (independent of blob deduplication) plus all historical blobs and commit emails.
 
@@ -95,6 +96,7 @@ REQUIRED_ROOT_FILES = (
     ".gitignore",
     "tools/build_modified22.py",
     "tools/build_modified23.py",
+    "tools/build_modified24.py",
     "tools/verify_repo_hygiene.py",
     "tools/fw/z6_c380_container.py",
     "tools/fw/z6_c380_zero_samples.json",
@@ -103,10 +105,18 @@ REQUIRED_ROOT_FILES = (
     "tools/fw/verify_modified23_kit.py",
     "tools/fw/probe_modified23_native.py",
     "tools/fw/probe_modified23_updater.py",
+    "tools/fw/z6_night_vision_red.py",
+    "tools/fw/prepare_modified24_lab.py",
+    "tools/fw/package_modified24_kit.py",
+    "tools/fw/verify_modified24_kit.py",
+    "tools/fw/probe_modified24_native.py",
+    "tools/fw/probe_modified24_updater.py",
+    "tools/fw/qemu_modified24_probe.py",
     "tools/evidence/nef_evidence_lib.py",
     "tools/evidence/build_m23_audit_metrics.py",
     "patches/z6-c380-modified22-color-space-pid0526-srgb-600s.json",
     "patches/z6-c380-modified23-uncompressed-astro-raw-srgb-600s.json",
+    "patches/z6-c380-modified24-astro-raw-red-srgb-600s.json",
     "docs/README.md",
     "docs/README_EN.md",
     "docs/CHANGELOG.md",
@@ -130,6 +140,11 @@ REQUIRED_ROOT_FILES = (
     "docs/evidence/m23_audit_metrics.json",
     "docs/MODIFIED23_UNCOMPRESSED_ASTRO_RAW_FIX_2026-11-18.md",
     "docs/MODIFIED23_UNCOMPRESSED_ASTRO_RAW_FIX_2026-11-18_EN.md",
+    "docs/NIGHT_VISION_RED_DISPLAY_ARCHITECTURE.md",
+    "docs/NIGHT_VISION_RED_DISPLAY_ARCHITECTURE_EN.md",
+    "docs/evidence/probe_modified24_native_result.json",
+    "docs/evidence/modified24_updater_audit.json",
+    "docs/evidence/qemu_modified24_result.json",
 )
 
 BILINGUAL_DOC_PAIRS = (
@@ -178,10 +193,16 @@ BILINGUAL_DOC_PAIRS = (
         "CHANGELOG_EN.md",
         "CHANGELOG.md",
     ),
+    (
+        "docs/NIGHT_VISION_RED_DISPLAY_ARCHITECTURE.md",
+        "docs/NIGHT_VISION_RED_DISPLAY_ARCHITECTURE_EN.md",
+        "NIGHT_VISION_RED_DISPLAY_ARCHITECTURE_EN.md",
+        "NIGHT_VISION_RED_DISPLAY_ARCHITECTURE.md",
+    ),
 )
 
-EXPECTED_RELEASE_ZIP_SIZE_TOKEN = "29,320,565"
-EXPECTED_RELEASE_ZIP_SHA256 = "1aae77b798f2768ef873d256108758d0a097537632d8fb531c04ca26c29d818e"
+EXPECTED_RELEASE_ZIP_SIZE_TOKEN = "29,325,238"
+EXPECTED_RELEASE_ZIP_SHA256 = "089d694c3fe5a2eb467467ad7d44cdd8ecd9ab7fc6d76d892f09f126fd3e46dd"
 
 
 def _git_lines(*args: str, cwd: Path = REPO_ROOT) -> list[str]:
@@ -213,9 +234,20 @@ def check_clean_room_tools(repo: Path, errors: list[str]) -> None:
         "tools/fw/probe_modified23_updater.py",
         "tools/evidence/build_m23_audit_metrics.py",
     )
+    m24_hardened_scripts = (
+        "tools/build_modified24.py",
+        "tools/fw/z6_night_vision_red.py",
+        "tools/fw/prepare_modified24_lab.py",
+        "tools/fw/package_modified24_kit.py",
+        "tools/fw/verify_modified24_kit.py",
+        "tools/fw/probe_modified24_native.py",
+        "tools/fw/probe_modified24_updater.py",
+        "tools/fw/qemu_modified24_probe.py",
+    )
     clean_room_targets = [
         "tools/build_modified22.py",
         *m23_hardened_scripts,
+        *m24_hardened_scripts,
         "tools/fw/z6_c380_container.py",
         "tools/analyze_z6.py",
     ]
@@ -230,7 +262,7 @@ def check_clean_room_tools(repo: Path, errors: list[str]) -> None:
             if tok in text:
                 errors.append(f"Clean-room boundary violation in {rel}: contains '{tok}'")
 
-    for rel in (*m23_hardened_scripts, "tools/verify_repo_hygiene.py"):
+    for rel in (*m23_hardened_scripts, *m24_hardened_scripts, "tools/verify_repo_hygiene.py"):
         p = repo / rel
         if not p.is_file():
             continue
@@ -619,10 +651,13 @@ def check_evidence_doc_consistency(repo: Path, errors: list[str]) -> int:
         f"{round(f5110['comb_fft_bin3729_0p2276']):,}",
         EXPECTED_RELEASE_ZIP_SIZE_TOKEN,
         EXPECTED_RELEASE_ZIP_SHA256,
-        "Nikon-Z6-C380-Modified23-Astro-Firmware.zip",
+        "Nikon-Z6-C380-Modified24-Astro-Firmware.zip",
         "SHA256SUMS.txt",
-        "01_MODIFIED23/EG162080.BIN",
-        "47a5caa9521c4d81e57958626baf9660fefdc489da120840b931525968a11029",
+        "01_MODIFIED24/EG162080.BIN",
+        "168dcf2ceffb2622915e06f6cf8c9f3d90a5824ea2fbb6451b28657897a89653",
+        "0x8799",
+        "PID 0x0526",
+        "PID 0x1111",
     )
     for rel_rm in ("README.md", "README_EN.md"):
         prm = repo / rel_rm
@@ -651,6 +686,9 @@ def check_evidence_doc_consistency(repo: Path, errors: list[str]) -> int:
         "docs/03_UI_SWITCH_AND_COLOR_SPACE_ARCHITECTURE_EN.md",
         "docs/04_EXTENDED_SHUTTER_AND_INTERVAL_TIMER.md",
         "docs/04_EXTENDED_SHUTTER_AND_INTERVAL_TIMER_EN.md",
+        "docs/NIGHT_VISION_RED_DISPLAY_ARCHITECTURE.md",
+        "docs/NIGHT_VISION_RED_DISPLAY_ARCHITECTURE_EN.md",
+        "docs/STANDBY_FOCUS_LOSS_INVESTIGATION.md",
         "docs/PROJECT_GOALS.md",
         "docs/NEXT_STEPS.md",
     )
@@ -671,6 +709,17 @@ def check_evidence_doc_consistency(repo: Path, errors: list[str]) -> int:
         "121 个实机样本",
         "all **121**",
         "across **121**",
+        "Nikon-Z6-C380-Modified23-Astro-Firmware",
+        "Nikon-Z6-C380-Modified22-Astro-Firmware",
+        "01_MODIFIED23",
+        "01_MODIFIED22",
+        "v3.80-modified23",
+        "v3.80-modified22",
+        "p2_red_exp",
+        "z6_night_vision_red_p2_exp",
+        "P2 实验分支",
+        "P2 Experimental Branch",
+        "尚未合入正式版",
     )
     for rel_exp in explanatory_docs:
         p_exp = repo / rel_exp
@@ -867,6 +916,8 @@ def check_evidence_doc_consistency(repo: Path, errors: list[str]) -> int:
             "hardware_pixels_verified = false",
             "刷机前完备验证候选",
             "Pre-Flash Verified Candidate",
+            "正式作为当前稳定发布版",
+            "now the current production release",
         )
         for rel_m23 in (
             "docs/MODIFIED23_UNCOMPRESSED_ASTRO_RAW_FIX_2026-11-18.md",
@@ -882,6 +933,133 @@ def check_evidence_doc_consistency(repo: Path, errors: list[str]) -> int:
                 for bad_phrase in stale_m23_phrases:
                     if bad_phrase in tm23:
                         errors.append(f"{rel_m23} contains stale/imprecise claim '{bad_phrase}'")
+                    checks += 1
+    # Cross-check Modified24 recipe, native probe, updater audit, QEMU probe, and bilingual docs
+    m24_recipe_p = repo / "patches/z6-c380-modified24-astro-raw-red-srgb-600s.json"
+    m24_probe_p = repo / "docs/evidence/probe_modified24_native_result.json"
+    m24_upd_p = repo / "docs/evidence/modified24_updater_audit.json"
+    m24_qemu_p = repo / "docs/evidence/qemu_modified24_result.json"
+    if m24_recipe_p.is_file() and m24_probe_p.is_file() and m24_upd_p.is_file() and m24_qemu_p.is_file():
+        m24_rec = json.loads(m24_recipe_p.read_text(encoding="utf-8"))
+        m24_prb = json.loads(m24_probe_p.read_text(encoding="utf-8"))
+        m24_upd = json.loads(m24_upd_p.read_text(encoding="utf-8"))
+        m24_qem = json.loads(m24_qemu_p.read_text(encoding="utf-8"))
+        m24_sha = m24_rec.get("modified24_sha256", "")
+        m24_crc = m24_rec.get("crc16_hqx", "")
+        if not (
+            m24_rec.get("status") == "camera-verified-release"
+            and m24_rec.get("total_edits") == 112
+            and m24_rec.get("astro_ui_edits") == 18
+            and m24_rec.get("astro_red_edits") == 7
+            and m24_rec.get("interval_timer_edits") == 3
+            and m24_rec.get("m600_v2_edits") == 84
+            and m24_crc == "0x8799"
+            and m24_rec.get("size_bytes") == 33502842
+        ):
+            errors.append("Modified24 recipe edit counts, status, or crc16_hqx mismatch")
+        checks += 2
+
+        neg24 = m24_prb.get("negative_gates", {})
+        reg24 = m24_prb.get("modified23_baseline_regression", {})
+        red24 = m24_prb.get("astro_red_display_tests", {})
+        vgc24 = red24.get("vgc_ch1_vs_ch0_hdmi_isolation", {})
+        str24 = red24.get("chained_36_language_ui_strings", {})
+        if not (
+            m24_prb.get("status") == "PASS"
+            and m24_prb.get("measured_candidate_sha256") == m24_sha
+            and m24_prb.get("measured_candidate_crc16_hqx") == m24_crc
+            and m24_prb.get("measured_candidate_size_bytes") == 33502842
+            and neg24.get("modified23_rejected") is True
+            and neg24.get("stock_rejected") is True
+            and reg24.get("raw_pipeline_matrix_cases") == 437
+            and reg24.get("packed14_fullframe_pixels_verified") == 24498560
+            and reg24.get("site14_a34d0_dual_branch_and_apsr_cases") == 28
+            and vgc24.get("vgc_set_csc_matrix_cases") == 26
+            and vgc24.get("vgc_set_grid_color_cases") == 12
+            and vgc24.get("ch0_hdmi_zero_contamination_verified") is True
+            and str24.get("total_string_checks") == 648
+        ):
+            errors.append(
+                "probe_modified24_native_result.json identity, 437-case RAW regression, VGC isolation, or UI string mismatch"
+            )
+        checks += 6
+        upd24_files = m24_upd.get("file_checks") or []
+        upd24_sched = m24_upd.get("scheduler") or []
+        upd24_neg_cnt = sum(1 for row in upd24_files if row.get("expected_rejection") is True)
+        if not (
+            m24_upd.get("ok") is True
+            and m24_upd.get("measured_modified24_sha256") == m24_sha
+            and m24_upd.get("measured_modified24_crc16_hqx") == m24_crc
+            and m24_upd.get("measured_modified24_size_bytes") == 33502842
+            and m24_upd.get("negative_m23_binary_rejected") is True
+            and m24_upd.get("negative_stock_binary_rejected") is True
+            and m24_upd.get("physical_flash") is False
+            and len(upd24_files) == 7
+            and upd24_neg_cnt == 2
+            and len(upd24_sched) == 5
+        ):
+            errors.append("modified24_updater_audit.json identity, negative rejection, or count mismatch")
+        checks += 3
+
+        sg24 = m24_qem.get("shooting_grid_phase", {})
+        px24 = sg24.get("scanout_grid_pixel_diff", {})
+        if not (
+            m24_qem.get("ok") is True
+            and m24_qem.get("firmware_sha256") == m24_sha
+            and m24_qem.get("menu_phase", {}).get("ok") is True
+            and sg24.get("ok") is True
+            and sg24.get("on_grid_color") == "0x030000d8"
+            and px24.get("total_changed_pixels") == 5109
+            and px24.get("changed_nonzero_gb_pixels") == 0
+            and px24.get("pure_red_zero_gb_changed_pixels") == 5109
+            and px24.get("exact_expected_red_grid_pixels") == 5109
+            and m24_qem.get("firmware_unchanged") is True
+        ):
+            errors.append("qemu_modified24_result.json menu/grid scanout invariant mismatch")
+        checks += 4
+
+        nv_tokens = (
+            "z6_night_vision_red.py",
+            "PID 0x1111",
+            "0xC24DD0EC",
+            "0x1002E1B0",
+            "0x10243422",
+            "0x102435AE",
+            "0x10244154",
+            "0x1040E7D8",
+            "0x1043A1E0",
+            "0x104C013C",
+            "5,109",
+            "648",
+        )
+        for rel_nv in (
+            "docs/NIGHT_VISION_RED_DISPLAY_ARCHITECTURE.md",
+            "docs/NIGHT_VISION_RED_DISPLAY_ARCHITECTURE_EN.md",
+        ):
+            pnv = repo / rel_nv
+            if pnv.is_file():
+                tnv = pnv.read_text(encoding="utf-8")
+                for tok in nv_tokens:
+                    if tok not in tnv:
+                        errors.append(f"{rel_nv} missing verified Modified24 night-vision token '{tok}'")
+                    checks += 1
+
+        cl_tokens = (
+            "v3.80-modified24",
+            EXPECTED_RELEASE_ZIP_SIZE_TOKEN,
+            EXPECTED_RELEASE_ZIP_SHA256,
+            m24_sha,
+            m24_crc,
+            "PID 0x0526",
+            "PID 0x1111",
+        )
+        for rel_cl in ("docs/CHANGELOG.md", "docs/CHANGELOG_EN.md"):
+            pcl = repo / rel_cl
+            if pcl.is_file():
+                tcl = pcl.read_text(encoding="utf-8")
+                for tok in cl_tokens:
+                    if tok not in tcl:
+                        errors.append(f"{rel_cl} missing verified Modified24 changelog token '{tok}'")
                     checks += 1
     return checks
 

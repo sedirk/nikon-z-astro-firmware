@@ -8,7 +8,22 @@
 
 ## 正式发布版本 (Official Releases)
 
-### [`v3.80-modified23`](https://github.com/sedirk/nikon-z-astro-firmware/releases/tag/v3.80-modified23) — 2026-11-19（当前正式稳定版）
+### [`v3.80-modified24`](https://github.com/sedirk/nikon-z-astro-firmware/releases/tag/v3.80-modified24) — 2026-11-21（当前正式稳定版）
+
+- **固件产物与校验指纹**：
+  - 预打包刷机套件：`Nikon-Z6-C380-Modified24-Astro-Firmware.zip`（`29,325,238` B，SHA-256: `089d694c3fe5a2eb467467ad7d44cdd8ecd9ab7fc6d76d892f09f126fd3e46dd`）
+  - 主固件模块 `01_MODIFIED24/EG162080.BIN`：`33,502,842` B，SHA-256: `168dcf2ceffb2622915e06f6cf8c9f3d90a5824ea2fbb6451b28657897a89653`，CRC-16/XMODEM: `0x8799`（共 `112` 处补丁跨度：`18` 处 Astro/UI + `7` 处天文夜视红光显示 + `3` 处曝光后间隔拍摄 + `84` 处 M 档 `60"~600"` 扩展慢门）
+- **核心改进与借壳菜单说明**：
+  - **机内天文夜视红光显示与 VGC 通道 1 硬件隔离（`Free Hole B 0x1002E1B0` + 6 处显示/UI 钩子）**：逆向提取尼康 Z8 `d11：暖色显示屏颜色` 显示矩阵机制，在 Z6 显示控制器（VGC）通道 1（`0x20144000` 背面 LCD + OLED EVF）部署 `Mode 2A LumaRed`（Q14 矩阵首字 `0x00003000`，强制 `G = 0, B = 0`）、无状态单帧同步（`0x102435AE`）与硬件构图网格纯红掩码（`0x10244154` -> `0x20145618 = 0x030000d8`），严格隔离通道 0（`0x20140000` 外接 HDMI 净输出）以及 NEF RAW、JPEG、测光与直方图图像管线；
+  - **双正交原厂菜单无损借壳架构（36 种机身语言全覆盖）**：
+    1. **天文直通 RAW 开关**借用「**照片拍摄菜单 -> 色空间**」（`PID 0x0526` @ `RAM 0xC24CDEA0`：原厂 `0 = sRGB` / `1 = Adobe RGB` 改造为 `0 = 标准 (sRGB)` / `1 = 直通RAW (sRGB)`，底层有效色空间 `PID 0x130A` 恒锁 `0 (sRGB)`）；
+    2. **天文红光显示开关**借用「**设定菜单 -> 信息显示**」（`PID 0x1111` @ `RAM 0xC24DD0EC`，`rom_default = 0`：原厂 `0 = 光亮时用暗字体` / `1 = 黑暗时用亮字体` 改造为 `0 = 关闭 (标准色彩)` / `1 = 开启 (天文红光)`），在 `0x1040E7D8` / `0x1043A1E0` 将 `DISP` 拍摄参数屏永久锁定为护眼的「黑底亮字」，并在 `GetLanguageString` 尾声 `0x104C013C` 与 `0x104C0134` 完成 36 国语言字符串链式覆盖（因尼康刷机保留机身 NVRAM 个人设定，若刷机前原厂设为 `黑暗时用亮字体` `1`，首次开机会继承 `PID 0x1111 == 1` 直接开启红光，进菜单切回一次 `0` 即可持久化恢复全彩）。
+- **验证与证据固化**：
+  - 通过 Unicorn 原生探针（`26` 组 VGC CSC 矩阵与通道 0 HDMI 隔离测试、`12` 组硬件网格掩码测试、无状态单帧同步测试、`648` 项 36 国语言双菜单字符串与邻接校验，以及 `Modified23` 基线全量回归）、`z6-qemu` 全系统 GUI 菜单与实时取景扫描输出实证（开启红光后 `0x201454F0 = 0x3000`、网格寄存器 `0x030000d8`、`5,109` 像素纯红零蓝绿变化、通道 0 HDMI 恒为 `0x0`）、7 项单模块升级预检 + 5 项离线刷写扇区调度审计（含 `Modified23 <-> Modified24` 与 `Stock C3.80 <-> Modified24`），以及物理 Nikon Z6 真机刷写与菜单/取景/回放实测验收（详见 [NIGHT_VISION_RED_DISPLAY_ARCHITECTURE.md](NIGHT_VISION_RED_DISPLAY_ARCHITECTURE.md)、[evidence/probe_modified24_native_result.json](evidence/probe_modified24_native_result.json)、[evidence/qemu_modified24_result.json](evidence/qemu_modified24_result.json) 与 [evidence/modified24_updater_audit.json](evidence/modified24_updater_audit.json)）。
+
+---
+
+### [`v3.80-modified23`](https://github.com/sedirk/nikon-z-astro-firmware/releases/tag/v3.80-modified23) — 2026-11-19
 
 - **固件产物与校验指纹**：
   - 预打包刷机套件：`Nikon-Z6-C380-Modified23-Astro-Firmware.zip`（`29,320,565` B，SHA-256: `1aae77b798f2768ef873d256108758d0a097537632d8fb531c04ca26c29d818e`）

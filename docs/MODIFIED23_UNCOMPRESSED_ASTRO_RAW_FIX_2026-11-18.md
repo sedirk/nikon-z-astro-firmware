@@ -3,7 +3,7 @@
 > 🌐 **语言 / Language**: **简体中文** | **[English](MODIFIED23_UNCOMPRESSED_ASTRO_RAW_FIX_2026-11-18_EN.md)** · 🏠 [返回文档索引](README.md)
 
 > [!IMPORTANT]
-> **验证状态说明（已通过真机实拍闭环）**：`Modified23`（`modified23-uncompressed-astro-raw-pid0526-srgb-600s-v1`，SHA-256: `47a5caa9521c4d81e57958626baf9660fefdc489da120840b931525968a11029`，CRC-16/XMODEM: `0xc083`）已完成离线全矩阵仿真与 **EXPEED 6 真机刷写实拍闭环验证（`samples/11.19_modified23`，共 9 张暗场 NEF，`hardware_pixels_verified = true`）**。除了通过 105 处二进制补丁与 `Modified22` 负例拒绝门禁审计、Unicorn 437 组管线矩阵仿真、软件 `packed-14`/`packed-12` 回环与实拍 `Z61_5105.NEF` 软件重打包回环以及 `7` 项升级预检 + `5` 项刷写调度离线审计外，真机实拍的 `6` 张长曝光未压缩 `14-bit` NEF（`5s` × 3 + `60s` 扩展慢门 × 3，共 `146,991,360` 硬件打包像素）均输出标准 `42,920,960` B `packed-14` 条带，零预览图重叠，与 `LibRaw 0.22.2` 全画幅逐像素零误差对齐，正式作为当前稳定发布版（`v3.80-modified23`）。
+> **验证状态说明（已通过真机实拍闭环）**：`Modified23`（`modified23-uncompressed-astro-raw-pid0526-srgb-600s-v1`，SHA-256: `47a5caa9521c4d81e57958626baf9660fefdc489da120840b931525968a11029`，CRC-16/XMODEM: `0xc083`）已完成离线全矩阵仿真与 **EXPEED 6 真机刷写实拍闭环验证（`samples/11.19_modified23`，共 9 张暗场 NEF，`hardware_pixels_verified = true`）**。除了通过 105 处二进制补丁与 `Modified22` 负例拒绝门禁审计、Unicorn 437 组管线矩阵仿真、软件 `packed-14`/`packed-12` 回环与实拍 `Z61_5105.NEF` 软件重打包回环以及 `7` 项升级预检 + `5` 项刷写调度离线审计外，真机实拍的 `6` 张长曝光未压缩 `14-bit` NEF（`5s` × 3 + `60s` 扩展慢门 × 3，共 `146,991,360` 硬件打包像素）均输出标准 `42,920,960` B `packed-14` 条带，零预览图重叠，与 `LibRaw 0.22.2` 全画幅逐像素零误差对齐，作为 `v3.80-modified23` 里程碑发布并完整继承至当前最新正式版（`v3.80-modified24`）。
 
 ---
 

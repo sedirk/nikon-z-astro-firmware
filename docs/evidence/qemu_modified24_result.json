@@ -1,0 +1,112 @@
+{
+  "ok": true,
+  "candidate": "modified24-astro-raw-red-display-pid0526-pid1111-srgb-600s-v1",
+  "firmware_sha256": "168dcf2ceffb2622915e06f6cf8c9f3d90a5824ea2fbb6451b28657897a89653",
+  "menu_phase": {
+    "ok": true,
+    "screenshots": [
+      "01_menu_boot_default_off.png",
+      "02_setup_menu_en.png",
+      "03_setup_submenu_options_en.png",
+      "04_setup_menu_red_on.png",
+      "05_setup_menu_restored_off.png"
+    ],
+    "live_code_checks": {
+      "astro_raw_site14_0x100a34d0": "8af744bbe9e7",
+      "astro_red_cave_0x1002e1b0": "0e461d46",
+      "astro_red_disp_a_0x1040e7d8": "0024",
+      "astro_red_disp_b_0x1043a1e0": "18e0",
+      "astro_red_csc_hook_0x10243422": "eaf5c5be",
+      "astro_red_sync_hook_0x102435ae": "eaf52dbe00bf",
+      "astro_red_grid_hook_0x10244154": "eaf546b8",
+      "astro_red_lang_hook_0x104c013c": "6ef7b4b0"
+    },
+    "gui_menu_button_toggled_pid1111": true,
+    "boot_pid_0x1111": 0,
+    "boot_ram_0x1111": 0,
+    "boot_ch1_csc": [
+      "0x4000",
+      "0x5a00",
+      "0xea004000",
+      "0xd200",
+      "0x71004000",
+      "0x0"
+    ],
+    "on_ch1_csc": [
+      "0x3000",
+      "0x0",
+      "0x0",
+      "0x0",
+      "0x0",
+      "0x0"
+    ],
+    "on_ch0_csc": [
+      "0x0",
+      "0x0",
+      "0x0",
+      "0x0",
+      "0x0",
+      "0x0"
+    ],
+    "restored_ch1_csc": [
+      "0x4000",
+      "0x5a00",
+      "0xea004000",
+      "0xd200",
+      "0x71004000",
+      "0x0"
+    ]
+  },
+  "shooting_grid_phase": {
+    "ok": true,
+    "screenshots": [
+      "06_shooting_liveview_grid_off.png",
+      "07_shooting_liveview_grid_red_on.png",
+      "08_shooting_liveview_grid_restored_off.png"
+    ],
+    "off_ch1_csc": [
+      "0x4000",
+      "0x5a00",
+      "0xea004000",
+      "0xd200",
+      "0x71004000",
+      "0x0"
+    ],
+    "off_grid_enable": 1,
+    "off_grid_color": "0x03d8d8d8",
+    "on_ch1_csc": [
+      "0x3000",
+      "0x0",
+      "0x0",
+      "0x0",
+      "0x0",
+      "0x0"
+    ],
+    "on_ch0_csc": [
+      "0x0",
+      "0x0",
+      "0x0",
+      "0x0",
+      "0x0",
+      "0x0"
+    ],
+    "on_grid_color": "0x030000d8",
+    "scanout_grid_pixel_diff": {
+      "total_changed_pixels": 5109,
+      "changed_nonzero_gb_pixels": 0,
+      "red_dominant_changed_pixels": 5109,
+      "pure_red_zero_gb_changed_pixels": 5109,
+      "exact_expected_red_grid_pixels": 5109
+    },
+    "restored_ch1_csc": [
+      "0x4000",
+      "0x5a00",
+      "0xea004000",
+      "0xd200",
+      "0x71004000",
+      "0x0"
+    ],
+    "restored_grid_color": "0x03d8d8d8"
+  },
+  "firmware_unchanged": true
+}

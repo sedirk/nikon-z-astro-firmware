@@ -4,25 +4,17 @@
 
 ## 1. 当前优先任务状态总览
 
-当前正式版固件 **`Modified23`（`v3.80-modified23`）** 已完成同心彩圈抑制、通道增益加成归零（`1.0000×`）、暗电流与单像素星点保留、全快门无损压缩 / 未压缩 `packed-14` 等价直通、`PID 0x0526 + sRGB` 无感菜单切换、M 档 `60"~600"` 扩展慢门及曝光后纯等待间隔拍摄的真机实拍闭环验收。在此基线之上，3 项优先任务推进状态如下：
+当前正式版固件 **`Modified24`（`v3.80-modified24`）** 已完成同心彩圈抑制、通道增益加成归零（`1.0000×`）、暗电流与单像素星点保留、全快门无损压缩 / 未压缩 `packed-14` 等价直通、`PID 0x0526` 与 `PID 0x1111` 双正交借壳菜单切换、VGC 通道 1（背面 LCD + OLED EVF）纯红护眼夜视显示、M 档 `60"~600"` 扩展慢门及曝光后纯等待间隔拍摄的真机闭环验收。3 项阶段性优先任务状态总览如下：
 
-| 优先级 | 课题名称 | 当前状态 | 核心现象与结论摘要 | 关联报告 / 证据 |
+| 优先级 | 课题名称 | 当前状态 | 核心结论摘要 | 关联报告 / 证据 |
 | :---: | :--- | :---: | :--- | :--- |
-| **P1** | **1. 长曝未压缩直通 RAW 硬件位打包修复** | **已闭环发布 (`v3.80-modified23`)** | 通过 `0x100A34D0 -> 0x1002DB5C`（`tramp_a34d0`）受控恢复前端 `format=3`（`16-bit LE`）输入的无损硬件 `14-bit`（`42,920,960` B）/ `12-bit`（`36,780,160` B）线性位打包；经真机 `5s` 与 `60s` 扩展慢门共 9 张 NEF 实拍验收，与 `LibRaw 0.22.2` 逐像素 `0` 差异、内嵌预览重叠 `0`（`hardware_pixels_verified = true`） | [MODIFIED23_UNCOMPRESSED_ASTRO_RAW_FIX_2026-11-18.md](MODIFIED23_UNCOMPRESSED_ASTRO_RAW_FIX_2026-11-18.md)、[evidence/m23_audit_metrics.json](evidence/m23_audit_metrics.json) |
-| **P2** | **2. 夜视红光模式（Night Vision Red Display）** | **待攻关** | 初代 Z6 缺乏新机型（Z8 / Z9 / Zf）的红光夜视界面，暗空环境下屏幕与 EVF 的蓝绿白光易破坏人眼暗适应并引入杂散光 | 待新建专题（排查 EVF/LCD 显示控制器色彩变换矩阵与 OSD 调色板） |
+| **P1** | **1. 长曝未压缩直通 RAW 硬件位打包修复** | **已真机闭环集成** | 通过 `0x100A34D0 -> 0x1002DB5C`（`tramp_a34d0`）恢复前端 `format=3`（`16-bit LE`）输入的无损硬件 `14-bit`（`42,920,960` B）/ `12-bit`（`36,780,160` B）线性位打包；真机 `5s` 与 `60s` 共 9 张 NEF 实拍与 `LibRaw 0.22.2` 逐像素 `0` 差异、预览重叠 `0` | [MODIFIED23_UNCOMPRESSED_ASTRO_RAW_FIX_2026-11-18.md](MODIFIED23_UNCOMPRESSED_ASTRO_RAW_FIX_2026-11-18.md)、[evidence/m23_audit_metrics.json](evidence/m23_audit_metrics.json) |
+| **P2** | **2. 夜视红光模式（Night Vision Red Display）** | **已真机闭环发布 (`v3.80-modified24`)** | 逆向提取 Z8 `d11` 暖色显示架构，在 Z6 VGC 通道 1（`0x20144000` 背面 LCD + OLED EVF）实现 `Mode 2A LumaRed`（`0x201454F0 = 0x00003000`）与硬件网格纯红掩码（`0x20145618` `G=0, B=0`），借用设定菜单「信息显示」（`PID 0x1111`）并锁定 `DISP` 黑底亮字；通过 Unicorn `26+12+648` 项、`z6-qemu`（`RedGridDiffPx=5109`）与物理 Z6 真机验收，RAW/JPEG/HDMI 零污染 | [NIGHT_VISION_RED_DISPLAY_ARCHITECTURE.md](NIGHT_VISION_RED_DISPLAY_ARCHITECTURE.md)、[evidence/probe_modified24_native_result.json](evidence/probe_modified24_native_result.json)、[evidence/qemu_modified24_result.json](evidence/qemu_modified24_result.json) |
 | **P3** | **3. 对焦位置待机记忆（Standby Focus Retention）** | **待重新攻关** | 唯卓仕 AF 16mm F1.8 Z 等副厂步进马达镜头在机身待机自动休眠唤醒后复位至物理零点（假无限远 `∞`），丢失星点真无穷远合焦位置（如 `5.2m`）；冷启动关机重启正常，待机唤醒必丢 | [STANDBY_FOCUS_LOSS_INVESTIGATION.md](STANDBY_FOCUS_LOSS_INVESTIGATION.md) |
 
 ---
 
-## 2. 待攻关课题排查切入点与验收标准
-
-### P2. 夜视红光模式（In-Camera Night Vision Red Display）
-- **需求背景**：深空与星野拍摄现场需要严格保护人眼暗适应（Dark Adaptation）。初代 Z6 原厂无暖色/红光界面功能，需在机身固件层面实现可快捷开关的纯红光夜视显示模式。
-- **排查切入点**：
-  1. 在 C3.80 固件与 `z6-qemu` 显示外设模型中定位 LCD / EVF 显示输出控制器（Display Engine / TCON）的硬件色彩变换矩阵（CSC）、Gamma LUT 或 RGB 通道增益寄存器，以及 UI OSD 图层合成调色板；
-  2. 验证仅在显示输出末端压制 G / B 通道（仅保留 R 通道输出），确保**绝对不污染**实时取景测光/对焦算法输入、直方图统计以及写入存储卡的 NEF / 伴生 JPEG 图像数据；
-  3. 设计与现有菜单无冲突的开关入口（支持快捷开启/关闭，重启或待机唤醒状态可控）。
-- **验收标准**：开启夜视红光后，背面 LCD 与 EVF 的菜单、信息界面及实时取景/回放画面均呈纯正暗红光显示（无刺眼白/蓝/绿光泄漏），关闭后 100% 恢复原厂正常色彩显示，实拍 NEF 与内嵌预览 JPEG 像素不受任何影响。
+## 2. 当前唯一待攻关课题排查切入点与验收标准
 
 ### P3. 对焦位置待机记忆（Standby Focus Position Retention）
 - **已核实现象与前序排查复盘**：

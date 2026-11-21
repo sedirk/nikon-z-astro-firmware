@@ -8,7 +8,22 @@ This document records the release changelog and reverse-engineering iteration hi
 
 ## Official Releases
 
-### [`v3.80-modified23`](https://github.com/sedirk/nikon-z-astro-firmware/releases/tag/v3.80-modified23) — 2026-11-19 (Latest Production Release)
+### [`v3.80-modified24`](https://github.com/sedirk/nikon-z-astro-firmware/releases/tag/v3.80-modified24) — 2026-11-21 (Latest Production Release)
+
+- **Release Artifacts & Checksums**:
+  - Pre-packaged flash kit: `Nikon-Z6-C380-Modified24-Astro-Firmware.zip` (`29,325,238` B, SHA-256: `089d694c3fe5a2eb467467ad7d44cdd8ecd9ab7fc6d76d892f09f126fd3e46dd`)
+  - Main firmware module `01_MODIFIED24/EG162080.BIN`: `33,502,842` B, SHA-256: `168dcf2ceffb2622915e06f6cf8c9f3d90a5824ea2fbb6451b28657897a89653`, CRC-16/XMODEM: `0x8799` (`112` patch spans: `18` Astro/UI + `7` night-vision red display + `3` post-exposure interval timer + `84` M-mode `60"~600"` extended shutter)
+- **What Changed & Repurposed Menu Summary**:
+  - **In-Camera Night Vision Red Display & VGC Channel 1 Hardware Isolation (`Free Hole B 0x1002E1B0` + 6 display/UI hooks)**: Reverse-engineered Nikon Z8's `d11: Warm display colors` mechanism and deployed `Mode 2A LumaRed` (Q14 matrix word 0 `0x00003000`, `G = 0, B = 0`), stateless single-frame live sync (`0x102435AE`), and hardware framing-grid pure-red masking (`0x10244154` -> `0x20145618 = 0x030000d8`) strictly on Z6 VGC Channel 1 (`0x20144000`, rear LCD + OLED EVF), leaving Channel 0 (`0x20140000` external HDMI clean feed) as well as recorded NEF RAW, JPEGs, metering, and histograms 100% uncontaminated;
+  - **Orthogonal Dual Repurposed Stock Menu Architecture (All 36 Camera Languages)**:
+    1. **Astro RAW mode toggle** repurposes **`Photo Shooting Menu -> Color space`** (`PID 0x0526` @ `RAM 0xC24CDEA0`: stock `0 = sRGB` / `1 = Adobe RGB` -> `0 = Standard (sRGB)` / `1 = Astro RAW (sRGB)`, while effective color space `PID 0x130A` remains locked to `0 (sRGB)`);
+    2. **Astro red display toggle** repurposes **`Setup Menu -> Information display`** (`PID 0x1111` @ `RAM 0xC24DD0EC`, `rom_default = 0`: stock `0 = Dark on light` / `1 = Light on dark` -> `0 = Off (Standard)` / `1 = On (Astro Red)`), permanently locks the `DISP` shooting-info screen to eye-friendly `Light on dark` (`0x1040E7D8` / `0x1043A1E0`), and chains 36-language UTF-16LE label overrides at `GetLanguageString` epilogue `0x104C013C` alongside `0x104C0134` (because Nikon firmware updates preserve NVRAM user settings, bodies previously set to `Light on dark` (`1`) under stock firmware boot into `On (Astro Red)` once until switched back to `0 = Off (Standard)`).
+- **Verification & Pinned Evidence**:
+  - Verified via Unicorn native emulation (`26` VGC CSC matrix & Ch0 HDMI isolation cases, `12` hardware grid color cases, stateless single-frame transition tests, `648` 36-language dual-menu & neighbor string checks, plus full `Modified23` regression gates), `z6-qemu` full-system GUI menu & LiveView scanout verification (`0x201454F0 = 0x3000`, grid register `0x030000d8`, `5,109` pure-red zero-G/B changed pixels, Ch0 HDMI constant `0x0`), 7 single-module updater file checks + 5 offline flash-scheduler passes (`Modified23 <-> Modified24` and `Stock C3.80 <-> Modified24`), and on-camera flashing & LiveView/menu/playback testing on physical Nikon Z6 hardware (see [NIGHT_VISION_RED_DISPLAY_ARCHITECTURE_EN.md](NIGHT_VISION_RED_DISPLAY_ARCHITECTURE_EN.md), [evidence/probe_modified24_native_result.json](evidence/probe_modified24_native_result.json), [evidence/qemu_modified24_result.json](evidence/qemu_modified24_result.json), and [evidence/modified24_updater_audit.json](evidence/modified24_updater_audit.json)).
+
+---
+
+### [`v3.80-modified23`](https://github.com/sedirk/nikon-z-astro-firmware/releases/tag/v3.80-modified23) — 2026-11-19
 
 - **Release Artifacts & Checksums**:
   - Pre-packaged flash kit: `Nikon-Z6-C380-Modified23-Astro-Firmware.zip` (`29,320,565` B, SHA-256: `1aae77b798f2768ef873d256108758d0a097537632d8fb531c04ca26c29d818e`)
